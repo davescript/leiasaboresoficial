@@ -1,0 +1,37 @@
+name = "leiasaboresoficial"
+compatibility_date = "2024-10-01"
+
+# Cloudflare Pages build output
+pages_build_output_dir = "./dist"
+
+[vars]
+STRIPE_SECRET_KEY = ""
+STRIPE_WEBHOOK_SECRET = ""
+FRONTEND_URL = "http://localhost:5173"
+JWT_SECRET = "dev-secret-change-me"
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "leiasabores_d1"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "leia-images"
+
+[[kv_namespaces]]
+binding = "CART_KV"
+id = "cart-kv-dev"
+[durable_objects]
+bindings = [
+  { name = "SESSION_DO", class_name = "SessionDurableObject" }
+]
+
+[ai]
+binding = "AI"
+
+[[kv_namespaces]]
+binding = "PRODUCT_CACHE"
+id = "product-cache-dev"

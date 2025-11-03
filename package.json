@@ -1,0 +1,53 @@
+{
+  "name": "leiasaboresoficial",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "dev:pages": "wrangler pages dev dist",
+    "dev:api": "wrangler dev --local",
+    "deploy:workers": "wrangler deploy",
+    "test": "vitest run --coverage",
+    "test:e2e": "playwright test --headed",
+    "test:ci": "vitest run && playwright test --reporter=dot",
+    "stripe:sync": "stripe listen --print-secret | node scripts/update-stripe-secret.mjs",
+    "stripe:listen": "stripe listen --forward-to localhost:8787/api/webhooks/stripe",
+    "stripe:dev": "npm run stripe:sync && concurrently -n pages,stripe -c blue,magenta 'npx wrangler pages dev --port 8787' 'npm run stripe:listen'"
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@stripe/react-stripe-js": "^5.3.0",
+    "@stripe/stripe-js": "^8.2.0",
+    "@supabase/supabase-js": "^2.45.3",
+    "@tanstack/react-query": "^5.90.6",
+    "framer-motion": "^11.3.0",
+    "lucide-react": "^0.449.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.1",
+    "swr": "^2.3.6"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240512.0",
+    "@playwright/test": "^1.48.0",
+    "@testing-library/react": "^14.1.2",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.3",
+    "@vitest/coverage-v8": "^1.6.1",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^8.2.2",
+    "playwright": "^1.48.0",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.8",
+    "vite-plugin-compression": "^0.5.1",
+    "vitest": "^1.6.0",
+    "wrangler": "^3.80.0"
+  }
+}

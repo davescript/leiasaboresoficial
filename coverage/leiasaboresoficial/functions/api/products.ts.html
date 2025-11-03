@@ -1,0 +1,265 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for leiasaboresoficial/functions/api/products.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">leiasaboresoficial/functions/api</a> products.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/60</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/60</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import type { PagesFunction, Response as CfResponse } from '@cloudflare/workers-types'<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+<span class="cstat-no" title="statement not covered" >import { getAdminClient } from './_utils'</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >// Helper para garantir o tipo de Response do runtime Cloudflare</span>
+<span class="cstat-no" title="statement not covered" >const jsonResponse = (obj: unknown, init?: ResponseInit): CfResponse =&gt;</span>
+<span class="cstat-no" title="statement not covered" >  new Response(JSON.stringify(obj), { headers: { 'Content-Type': 'application/json' }, ...init }) as unknown as CfResponse</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >export const onRequestGet: PagesFunction = async ({ env, request }) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  const supabase = getAdminClient(env as any)</span>
+<span class="cstat-no" title="statement not covered" >  const url = new URL(request.url)</span>
+<span class="cstat-no" title="statement not covered" >  const search = url.searchParams.get('search')?.trim() ?? ''</span>
+<span class="cstat-no" title="statement not covered" >  const category = url.searchParams.get('category')?.trim() ?? ''</span>
+<span class="cstat-no" title="statement not covered" >  const page = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10))</span>
+<span class="cstat-no" title="statement not covered" >  const limit = Math.max(1, Math.min(50, parseInt(url.searchParams.get('limit') || '12', 10)))</span>
+<span class="cstat-no" title="statement not covered" >  const from = (page - 1) * limit</span>
+<span class="cstat-no" title="statement not covered" >  const to = from + limit - 1</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  // Base query com count</span>
+<span class="cstat-no" title="statement not covered" >  let query = supabase</span>
+<span class="cstat-no" title="statement not covered" >    .from('products')</span>
+<span class="cstat-no" title="statement not covered" >    .select('*', { count: 'exact' })</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  // Busca por nome/descrição</span>
+<span class="cstat-no" title="statement not covered" >  if (search) {</span>
+<span class="cstat-no" title="statement not covered" >    query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`)</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  if (category &amp;&amp; category.toLowerCase() !== 'all') {</span>
+<span class="cstat-no" title="statement not covered" >    query = query.eq('category', category.toLowerCase())</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  // Paginação via range</span>
+<span class="cstat-no" title="statement not covered" >  const { data, error, count } = await query.range(from, to)</span>
+<span class="cstat-no" title="statement not covered" >  if (error) return jsonResponse({ error: error.message }, { status: 500 })</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  // Auto-seed: se não houver produtos, inserir exemplos com imagens reais</span>
+<span class="cstat-no" title="statement not covered" >  if (!count || count === 0) {</span>
+<span class="cstat-no" title="statement not covered" >    const seed = [</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Bolo Red Velvet Artesanal', description: 'Bolo red velvet com 3 camadas e cream cheese.', price_cents: 6500, image_url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800', category: 'bolos', stock: 8 },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Bolo de Chocolate Belga Premium', description: 'Chocolate 70% cacau com ganache belga.', price_cents: 7500, image_url: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=800', category: 'bolos', stock: 6 },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Bolo de Cenoura com Brigadeiro', description: 'Tradicional com cobertura cremosa de brigadeiro.', price_cents: 4500, image_url: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=800', category: 'bolos', stock: 12 },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Bolo Floresta Negra', description: 'Chocolate, cerejas ao licor e chantilly.', price_cents: 8500, image_url: 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=800', category: 'bolos', stock: 4 },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Torta de Limão Siciliano', description: 'Base crocante e merengue italiano dourado.', price_cents: 5500, image_url: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800', category: 'tortas', stock: 10 },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Torta Banoffee', description: 'Doce de leite, bananas caramelizadas e chantilly.', price_cents: 5800, image_url: 'https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=800', category: 'tortas', stock: 6 },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Cupcake Red Velvet', description: 'Cobertura de cream cheese artesanal.', price_cents: 1200, image_url: 'https://images.unsplash.com/photo-1587668178277-295251f900ce?w=800', category: 'cupcakes', stock: 36 },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Cupcake de Chocolate Duplo', description: 'Recheio de brigadeiro e ganache.', price_cents: 1400, image_url: 'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=800', category: 'cupcakes', stock: 30 },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Cupcake de Baunilha Premium', description: 'Baunilha Madagascar com buttercream suíço.', price_cents: 1100, image_url: 'https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=800', category: 'cupcakes', stock: 42 },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Brownie Tradicional', description: 'Chocolate meio amargo com nozes.', price_cents: 1500, image_url: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=800', category: 'brownies', stock: 20 },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Brownie Cookies &amp; Cream', description: 'Com pedaços de Oreo e cream cheese.', price_cents: 2000, image_url: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800', category: 'brownies', stock: 12 },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Brigadeiro Gourmet (12 un.)', description: 'Sabores variados com ingredientes premium.', price_cents: 3500, image_url: 'https://images.unsplash.com/photo-1558312657-b2dead03d494?w=800', category: 'doces', stock: 25 }</span>
+<span class="cstat-no" title="statement not covered" >    ]</span>
+<span class="cstat-no" title="statement not covered" >    await supabase.from('products').insert(seed)</span>
+<span class="cstat-no" title="statement not covered" >    const { data: seeded, count: seededCount } = await supabase.from('products').select('*', { count: 'exact' }).range(0, limit - 1)</span>
+<span class="cstat-no" title="statement not covered" >    const totalPages = Math.ceil((seededCount || 0) / limit)</span>
+<span class="cstat-no" title="statement not covered" >    return jsonResponse({ products: seeded ?? [], total: seededCount ?? 0, totalPages })</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const totalPages = Math.ceil((count || 0) / limit)</span>
+<span class="cstat-no" title="statement not covered" >  return jsonResponse({ products: data ?? [], total: count ?? 0, totalPages })</span>
+<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-11-02T06:02:02.183Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
+</html>
+    
