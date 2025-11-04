@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>0/24</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>0/24</span>
             </div>
         
             
@@ -71,7 +71,22 @@
 <a name='L6'></a><a href='#L6'>6</a>
 <a name='L7'></a><a href='#L7'>7</a>
 <a name='L8'></a><a href='#L8'>8</a>
-<a name='L9'></a><a href='#L9'>9</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -79,14 +94,44 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import type { PagesFunction } from '@cloudflare/workers-types'</span></span></span>
-<span class="cstat-no" title="statement not covered" >import { getAdminClient } from '../_utils'</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import type { PagesFunction, Response as CfResponse } from '@cloudflare/workers-types'<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+<span class="cstat-no" title="statement not covered" >import { getD1, queryOne } from '../_db'</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >const json = (obj: unknown, init?: ResponseInit): CfResponse =&gt;</span>
+<span class="cstat-no" title="statement not covered" >  new Response(JSON.stringify(obj), { headers: { 'Content-Type': 'application/json' }, ...init }) as unknown as CfResponse</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >export const onRequestGet: PagesFunction = async ({ env, params }) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  const supabase = getAdminClient(env as any)</span>
-<span class="cstat-no" title="statement not covered" >  const { data, error } = await supabase.from('products').select('*').eq('id', params.id).single()</span>
-<span class="cstat-no" title="statement not covered" >  if (error) return new Response(JSON.stringify({ error: error.message }), { status: 404 })</span>
-<span class="cstat-no" title="statement not covered" >  return new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } })</span>
+<span class="cstat-no" title="statement not covered" >  const db = getD1(env as any)</span>
+<span class="cstat-no" title="statement not covered" >  const id = (params as any)?.id as string</span>
+<span class="cstat-no" title="statement not covered" >  if (!id) return json({ error: 'missing id' }, { status: 400 })</span>
+<span class="cstat-no" title="statement not covered" >  const p = await queryOne&lt;any&gt;(db, 'SELECT id, name, description, price_cents, image_url, category, stock, images_json FROM products WHERE id = ?', [id])</span>
+<span class="cstat-no" title="statement not covered" >  if (!p) return json({ error: 'not_found' }, { status: 404 })</span>
+<span class="cstat-no" title="statement not covered" >  const images = p.images_json ? JSON.parse(p.images_json) as string[] : []</span>
+<span class="cstat-no" title="statement not covered" >  return json({</span>
+<span class="cstat-no" title="statement not covered" >    id: p.id,</span>
+<span class="cstat-no" title="statement not covered" >    name: p.name,</span>
+<span class="cstat-no" title="statement not covered" >    description: p.description,</span>
+<span class="cstat-no" title="statement not covered" >    price_cents: p.price_cents,</span>
+<span class="cstat-no" title="statement not covered" >    image_url: p.image_url,</span>
+<span class="cstat-no" title="statement not covered" >    images,</span>
+<span class="cstat-no" title="statement not covered" >    category: p.category,</span>
+<span class="cstat-no" title="statement not covered" >    stock: p.stock,</span>
+<span class="cstat-no" title="statement not covered" >  })</span>
 <span class="cstat-no" title="statement not covered" >}</span></pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -94,7 +139,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-02T06:02:02.183Z
+                at 2025-11-04T01:14:56.566Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

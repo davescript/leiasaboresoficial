@@ -10,11 +10,11 @@ export default defineConfig({
     sourcemap: true,
   },
   server: {
-    port: 5173,
+    port: 8793,
     // Proxy API calls to local Wrangler dev (Workers)
     proxy: {
       '/api': {
-        target: 'http://localhost:8787',
+        target: 'http://localhost:8790',
         changeOrigin: true,
       },
     },

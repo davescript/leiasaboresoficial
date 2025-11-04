@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/225</span>
+                <span class='fraction'>0/246</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/225</span>
+                <span class='fraction'>0/246</span>
             </div>
         
             
@@ -287,7 +287,49 @@
 <a name='L222'></a><a href='#L222'>222</a>
 <a name='L223'></a><a href='#L223'>223</a>
 <a name='L224'></a><a href='#L224'>224</a>
-<a name='L225'></a><a href='#L225'>225</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a>
+<a name='L229'></a><a href='#L229'>229</a>
+<a name='L230'></a><a href='#L230'>230</a>
+<a name='L231'></a><a href='#L231'>231</a>
+<a name='L232'></a><a href='#L232'>232</a>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -513,7 +555,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import useSWR, { mutate } from 'swr'<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
 <span class="cstat-no" title="statement not covered" >import { useEffect } from 'react'</span>
-<span class="cstat-no" title="statement not covered" >import { useSupabaseAuth } from '../state/useSupabaseAuth'</span>
+<span class="cstat-no" title="statement not covered" >// Cart operates with anonymous cookie fallback; no Supabase required</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >interface CartItem {</span>
 <span class="cstat-no" title="statement not covered" >  id: string</span>
@@ -533,6 +575,7 @@
 <span class="cstat-no" title="statement not covered" >// Fetcher function for cart data: returns array of items</span>
 <span class="cstat-no" title="statement not covered" >const cartFetcher = async (url: string, token: string | null): Promise&lt;CartItem[]&gt; =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  const response = await fetch(url, {</span>
+<span class="cstat-no" title="statement not covered" >    credentials: 'include',</span>
 <span class="cstat-no" title="statement not covered" >    headers: token ? { Authorization: `Bearer ${token}` } : undefined,</span>
 <span class="cstat-no" title="statement not covered" >  })</span>
 <span class="cstat-no" title="statement not covered" >  if (!response.ok) {</span>
@@ -543,10 +586,9 @@
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >// Main hook for cart data</span>
 <span class="cstat-no" title="statement not covered" >export const useCart = () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  const { session } = useSupabaseAuth()</span>
-<span class="cstat-no" title="statement not covered" >  const token = session?.access_token ?? null</span>
+<span class="cstat-no" title="statement not covered" >  const token = null</span>
 <span class="cstat-no" title="statement not covered" >  const { data, error, isLoading, mutate: mutateCart } = useSWR&lt;CartItem[]&gt;(</span>
-<span class="cstat-no" title="statement not covered" >    token ? ['/api/cart', token] : null,</span>
+<span class="cstat-no" title="statement not covered" >    ['/api/cart', token],</span>
 <span class="cstat-no" title="statement not covered" >    ([url, t]) =&gt; cartFetcher(url as string, t as string | null),</span>
 <span class="cstat-no" title="statement not covered" >    {</span>
 <span class="cstat-no" title="statement not covered" >      revalidateOnFocus: false,</span>
@@ -597,6 +639,7 @@
 <span class="cstat-no" title="statement not covered" >          'Content-Type': 'application/json',</span>
 <span class="cstat-no" title="statement not covered" >          ...(token ? { Authorization: `Bearer ${token}` } : {}),</span>
 <span class="cstat-no" title="statement not covered" >        },</span>
+<span class="cstat-no" title="statement not covered" >        credentials: 'include',</span>
 <span class="cstat-no" title="statement not covered" >        body: JSON.stringify({ product_id: productId, quantity }),</span>
 <span class="cstat-no" title="statement not covered" >      })</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -604,9 +647,14 @@
 <span class="cstat-no" title="statement not covered" >        throw new Error('Failed to add to cart')</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      // Revalidate to get the actual data</span>
-<span class="cstat-no" title="statement not covered" >      mutateCart()</span>
-<span class="cstat-no" title="statement not covered" >      try { localStorage.setItem('cart_snapshot', JSON.stringify(await cartFetcher('/api/cart', token))) } catch {}</span>
+<span class="cstat-no" title="statement not covered" >      // Revalidate and immediately sync cache with server response</span>
+<span class="cstat-no" title="statement not covered" >      try {</span>
+<span class="cstat-no" title="statement not covered" >        const fresh = await cartFetcher('/api/cart', token)</span>
+<span class="cstat-no" title="statement not covered" >        mutateCart(fresh, false)</span>
+<span class="cstat-no" title="statement not covered" >        try { localStorage.setItem('cart_snapshot', JSON.stringify(fresh)) } catch {}</span>
+<span class="cstat-no" title="statement not covered" >      } catch {</span>
+<span class="cstat-no" title="statement not covered" >        mutateCart()</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >      </span>
 <span class="cstat-no" title="statement not covered" >      return await response.json()</span>
 <span class="cstat-no" title="statement not covered" >    } catch (error) {</span>
@@ -635,6 +683,7 @@
 <span class="cstat-no" title="statement not covered" >          'Content-Type': 'application/json',</span>
 <span class="cstat-no" title="statement not covered" >          ...(token ? { Authorization: `Bearer ${token}` } : {}),</span>
 <span class="cstat-no" title="statement not covered" >        },</span>
+<span class="cstat-no" title="statement not covered" >        credentials: 'include',</span>
 <span class="cstat-no" title="statement not covered" >        body: JSON.stringify({ item_id: itemId, quantity }),</span>
 <span class="cstat-no" title="statement not covered" >      })</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -642,9 +691,13 @@
 <span class="cstat-no" title="statement not covered" >        throw new Error('Failed to update cart item')</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      // Revalidate to get the actual data</span>
-<span class="cstat-no" title="statement not covered" >      mutateCart()</span>
-<span class="cstat-no" title="statement not covered" >      try { localStorage.setItem('cart_snapshot', JSON.stringify(await cartFetcher('/api/cart', token))) } catch {}</span>
+<span class="cstat-no" title="statement not covered" >      try {</span>
+<span class="cstat-no" title="statement not covered" >        const fresh = await cartFetcher('/api/cart', token)</span>
+<span class="cstat-no" title="statement not covered" >        mutateCart(fresh, false)</span>
+<span class="cstat-no" title="statement not covered" >        try { localStorage.setItem('cart_snapshot', JSON.stringify(fresh)) } catch {}</span>
+<span class="cstat-no" title="statement not covered" >      } catch {</span>
+<span class="cstat-no" title="statement not covered" >        mutateCart()</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >      </span>
 <span class="cstat-no" title="statement not covered" >      return await response.json()</span>
 <span class="cstat-no" title="statement not covered" >    } catch (error) {</span>
@@ -667,15 +720,20 @@
 <span class="cstat-no" title="statement not covered" >      const response = await fetch(`/api/cart/${itemId}`, {</span>
 <span class="cstat-no" title="statement not covered" >        method: 'DELETE',</span>
 <span class="cstat-no" title="statement not covered" >        headers: token ? { Authorization: `Bearer ${token}` } : undefined,</span>
+<span class="cstat-no" title="statement not covered" >        credentials: 'include',</span>
 <span class="cstat-no" title="statement not covered" >      })</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      if (!response.ok) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Failed to remove from cart')</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      // Revalidate to get the actual data</span>
-<span class="cstat-no" title="statement not covered" >      mutateCart()</span>
-<span class="cstat-no" title="statement not covered" >      try { localStorage.setItem('cart_snapshot', JSON.stringify(await cartFetcher('/api/cart', token))) } catch {}</span>
+<span class="cstat-no" title="statement not covered" >      try {</span>
+<span class="cstat-no" title="statement not covered" >        const fresh = await cartFetcher('/api/cart', token)</span>
+<span class="cstat-no" title="statement not covered" >        mutateCart(fresh, false)</span>
+<span class="cstat-no" title="statement not covered" >        try { localStorage.setItem('cart_snapshot', JSON.stringify(fresh)) } catch {}</span>
+<span class="cstat-no" title="statement not covered" >      } catch {</span>
+<span class="cstat-no" title="statement not covered" >        mutateCart()</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >      </span>
 <span class="cstat-no" title="statement not covered" >      return await response.json()</span>
 <span class="cstat-no" title="statement not covered" >    } catch (error) {</span>
@@ -696,15 +754,20 @@
 <span class="cstat-no" title="statement not covered" >      const response = await fetch('/api/cart', {</span>
 <span class="cstat-no" title="statement not covered" >        method: 'DELETE',</span>
 <span class="cstat-no" title="statement not covered" >        headers: token ? { Authorization: `Bearer ${token}` } : undefined,</span>
+<span class="cstat-no" title="statement not covered" >        credentials: 'include',</span>
 <span class="cstat-no" title="statement not covered" >      })</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      if (!response.ok) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Failed to clear cart')</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      // Revalidate to get the actual data</span>
-<span class="cstat-no" title="statement not covered" >      mutateCart()</span>
-<span class="cstat-no" title="statement not covered" >      try { localStorage.setItem('cart_snapshot', JSON.stringify(await cartFetcher('/api/cart', token))) } catch {}</span>
+<span class="cstat-no" title="statement not covered" >      try {</span>
+<span class="cstat-no" title="statement not covered" >        const fresh = await cartFetcher('/api/cart', token)</span>
+<span class="cstat-no" title="statement not covered" >        mutateCart(fresh, false)</span>
+<span class="cstat-no" title="statement not covered" >        try { localStorage.setItem('cart_snapshot', JSON.stringify(fresh)) } catch {}</span>
+<span class="cstat-no" title="statement not covered" >      } catch {</span>
+<span class="cstat-no" title="statement not covered" >        mutateCart()</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >      </span>
 <span class="cstat-no" title="statement not covered" >      return await response.json()</span>
 <span class="cstat-no" title="statement not covered" >    } catch (error) {</span>
@@ -742,7 +805,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-02T06:02:02.183Z
+                at 2025-11-04T01:14:56.566Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

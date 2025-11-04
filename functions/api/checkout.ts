@@ -12,7 +12,7 @@ interface StripePaymentIntent { id: string; client_secret?: string; status?: str
 async function createPaymentIntent(secret: string, amount_cents: number, metadata: Record<string,string>, receipt_email?: string, shipping?: Record<string, string | undefined>): Promise<StripePaymentIntent> {
   const body = new URLSearchParams({
     amount: String(amount_cents),
-    currency: 'brl',
+    currency: 'eur',
     automatic_payment_methods: 'enabled',
     ...(receipt_email ? { receipt_email } : {}),
     ...Object.entries(metadata).reduce((acc,[k,v]) => { acc[`metadata[${k}]`] = v; return acc }, {} as Record<string,string>),
@@ -63,7 +63,9 @@ async function updatePaymentIntent(secret: string, intentId: string, amount_cent
 }
 
 export const onRequestPost: PagesFunction = async ({ env, request }) => {
-  const token = request.headers.get('Authorization')?.replace('Bearer ', '') ?? null
+  const token = request.headers.get('Authorization')?.replace('Bearer ', '')
+    || (request.headers.get('Cookie') || '').match(/session=([^;]+)/)?.[1]
+    || null
   const user = await requireUser(env as any, token)
   if (!user) return jsonResponse({ error: 'Unauthorized' }, { status: 401 })
   const db = getD1(env as any)
@@ -105,7 +107,7 @@ export const onRequestPost: PagesFunction = async ({ env, request }) => {
       amount = amount - discount_cents
     }
   }
-  const shipping_cost = shipping_method === 'dhl' ? 1200 : 0
+  const shipping_cost = shipping_method === 'dhl' ? 495 : 0
   const total_amount = amount + shipping_cost
 
   const shippingRecord = address ? {
@@ -129,7 +131,7 @@ export const onRequestPost: PagesFunction = async ({ env, request }) => {
     city: shippingRecord.city,
     state: shippingRecord.state,
     postal_code: shippingRecord.zip,
-    country: 'BR',
+    country: 'PT',
   } : undefined
 
   // Ensure an open cart row exists for metadata tracking (optional)

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { useSupabaseAuth } from '../state/useSupabaseAuth'
+import { useAuth } from '../state/useAuth'
 import { getOrderDetails, getUserOrders, formatCurrency } from '../lib/api'
 
 export default function Sucesso() {
   const [searchParams] = useSearchParams()
-  const { session } = useSupabaseAuth()
+  const { session } = useAuth()
   const [loading, setLoading] = useState(true)
   const [order, setOrder] = useState<any | null>(null)
   const [paymentDetails, setPaymentDetails] = useState<{ payment_intent?: string; redirect_status?: string }>({})
@@ -22,7 +22,7 @@ export default function Sucesso() {
           const o = await getOrderDetails(order_id)
           setOrder(o)
         } else if (session?.user?.id) {
-          const orders = await getUserOrders(session.user.id)
+          const orders = await getUserOrders()
           const latestPaid = (orders || []).find((o: any) => o.status === 'paid') || (orders || [])[0] || null
           setOrder(latestPaid)
         }
@@ -36,7 +36,7 @@ export default function Sucesso() {
   }, [searchParams, session?.user?.id])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
+  <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
         <div className="mb-6">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">

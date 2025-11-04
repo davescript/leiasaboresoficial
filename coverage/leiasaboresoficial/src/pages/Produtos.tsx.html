@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/514</span>
+                <span class='fraction'>0/526</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/514</span>
+                <span class='fraction'>0/526</span>
             </div>
         
             
@@ -576,7 +576,31 @@
 <a name='L511'></a><a href='#L511'>511</a>
 <a name='L512'></a><a href='#L512'>512</a>
 <a name='L513'></a><a href='#L513'>513</a>
-<a name='L514'></a><a href='#L514'>514</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L514'></a><a href='#L514'>514</a>
+<a name='L515'></a><a href='#L515'>515</a>
+<a name='L516'></a><a href='#L516'>516</a>
+<a name='L517'></a><a href='#L517'>517</a>
+<a name='L518'></a><a href='#L518'>518</a>
+<a name='L519'></a><a href='#L519'>519</a>
+<a name='L520'></a><a href='#L520'>520</a>
+<a name='L521'></a><a href='#L521'>521</a>
+<a name='L522'></a><a href='#L522'>522</a>
+<a name='L523'></a><a href='#L523'>523</a>
+<a name='L524'></a><a href='#L524'>524</a>
+<a name='L525'></a><a href='#L525'>525</a>
+<a name='L526'></a><a href='#L526'>526</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1090,12 +1114,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { useState } from 'react';</span></span></span>
+<span class="cstat-no" title="statement not covered" >import { mutate as swrMutate } from 'swr';</span>
 <span class="cstat-no" title="statement not covered" >import { useNavigate } from 'react-router-dom';</span>
-<span class="cstat-no" title="statement not covered" >import { useSupabaseAuth } from '../state/useSupabaseAuth';</span>
 <span class="cstat-no" title="statement not covered" >import { useToast } from '../state/ToastContext';</span>
 <span class="cstat-no" title="statement not covered" >import { useDebounce } from '../hooks/useDebounce';</span>
 <span class="cstat-no" title="statement not covered" >import { OptimizedImage, ProductImageGallery } from '../components/OptimizedImage';</span>
 <span class="cstat-no" title="statement not covered" >import { useProductsQuery } from '../hooks/useProductsQuery';</span>
+<span class="cstat-no" title="statement not covered" >import { useCart } from '../hooks/useCart';</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >interface Product {</span>
 <span class="cstat-no" title="statement not covered" >  id: string;</span>
@@ -1118,9 +1143,10 @@
 <span class="cstat-no" title="statement not covered" >  const debouncedSearchTerm = useDebounce(searchTerm, 500);</span>
 <span class="cstat-no" title="statement not covered" >  const itemsPerPage = 12;</span>
 <span class="cstat-no" title="statement not covered" >  const [selectedImageIndex, setSelectedImageIndex] = useState(0);</span>
-<span class="cstat-no" title="statement not covered" >  const { session } = useSupabaseAuth();</span>
+<span class="cstat-no" title="statement not covered" >  const session = null as any;</span>
 <span class="cstat-no" title="statement not covered" >  const { showToast } = useToast();</span>
 <span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
+<span class="cstat-no" title="statement not covered" >  const { addToCart: addToCartFromHook } = useCart();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  // Use SWR hook for data fetching</span>
 <span class="cstat-no" title="statement not covered" >  const [sortBy, setSortBy] = useState&lt;'price_asc'|'price_desc'|'newest'&gt;('newest');</span>
@@ -1179,35 +1205,15 @@
 <span class="cstat-no" title="statement not covered" >    : [];</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const addToCart = async (productId: string) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (!session) {</span>
-<span class="cstat-no" title="statement not covered" >      showToast('Faça login para adicionar produtos ao carrinho', 'info');</span>
-<span class="cstat-no" title="statement not covered" >      return;</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >      const response = await fetch('/api/cart', {</span>
-<span class="cstat-no" title="statement not covered" >        method: 'POST',</span>
-<span class="cstat-no" title="statement not covered" >        headers: {</span>
-<span class="cstat-no" title="statement not covered" >          'Content-Type': 'application/json',</span>
-<span class="cstat-no" title="statement not covered" >          'Authorization': `Bearer ${session.access_token}`,</span>
-<span class="cstat-no" title="statement not covered" >        },</span>
-<span class="cstat-no" title="statement not covered" >        body: JSON.stringify({ productId, quantity: 1 }),</span>
-<span class="cstat-no" title="statement not covered" >      });</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      if (response.ok) {</span>
-<span class="cstat-no" title="statement not covered" >        showToast('Produto adicionado ao carrinho', 'success');</span>
-<span class="cstat-no" title="statement not covered" >        navigate('/carrinho');</span>
-<span class="cstat-no" title="statement not covered" >      } else {</span>
-<span class="cstat-no" title="statement not covered" >        if (response.status === 401) {</span>
-<span class="cstat-no" title="statement not covered" >          showToast('Sessão expirada. Entre novamente.', 'error');</span>
-<span class="cstat-no" title="statement not covered" >          navigate('/conta');</span>
-<span class="cstat-no" title="statement not covered" >        } else {</span>
-<span class="cstat-no" title="statement not covered" >          showToast('Erro ao adicionar produto ao carrinho', 'error');</span>
-<span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >      await addToCartFromHook(productId, 1)</span>
+<span class="cstat-no" title="statement not covered" >      // Toast e evento global para abrir MiniCart automaticamente</span>
+<span class="cstat-no" title="statement not covered" >      showToast('Produto adicionado ao carrinho', 'success')</span>
+<span class="cstat-no" title="statement not covered" >      try { window.dispatchEvent(new CustomEvent('cart:added', { detail: { productId, quantity: 1 } })) } catch {}</span>
+<span class="cstat-no" title="statement not covered" >      try { swrMutate(['/api/cart', null as any]) } catch {}</span>
 <span class="cstat-no" title="statement not covered" >    } catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >      console.error('Erro:', error);</span>
-<span class="cstat-no" title="statement not covered" >      showToast('Erro ao adicionar produto ao carrinho', 'error');</span>
+<span class="cstat-no" title="statement not covered" >      console.error('Erro:', error)</span>
+<span class="cstat-no" title="statement not covered" >      showToast('Erro ao adicionar produto ao carrinho', 'error')</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >  };</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -1227,6 +1233,7 @@
 <span class="cstat-no" title="statement not covered" >  };</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const filteredProducts = products; // Products are already filtered by the API</span>
+<span class="cstat-no" title="statement not covered" >  const [addingId, setAddingId] = useState&lt;string | null&gt;(null)</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const openProductModal = (product: Product) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    setSelectedProduct(product);</span>
@@ -1240,17 +1247,34 @@
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  if (loading) {</span>
 <span class="cstat-no" title="statement not covered" >    return (</span>
-<span class="cstat-no" title="statement not covered" >      &lt;div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-100 flex items-center justify-center"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;div className="text-center"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;div className="animate-spin rounded-full h-16 w-16 border-b-2 border-pink-600 mx-auto mb-4"&gt;&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;p className="text-gray-600 text-lg"&gt;Carregando delícias...&lt;/p&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-orange-50"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;div className="text-center mb-8"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;h1 className="text-4xl font-bold text-gray-900 mb-2"&gt;Nossos Produtos&lt;/h1&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;p className="text-lg text-gray-600"&gt;Carregando delícias artesanais...&lt;/p&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            {Array.from({ length: 8 }).map((_, i) =&gt; (</span>
+<span class="cstat-no" title="statement not covered" >              &lt;div key={i} className="app-card p-4 card-hover"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;div className="skeleton-img" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;div className="mt-4 space-y-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                  &lt;div className="skeleton-text w-2/3" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                  &lt;div className="skeleton-text w-1/2" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;div className="mt-6 flex items-center justify-between"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                  &lt;div className="skeleton-text w-24" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                  &lt;div className="skeleton-text w-20" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >            ))}</span>
+<span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >    );</span>
+<span class="cstat-no" title="statement not covered" >    )</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-orange-50"&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;div className="min-h-screen bg-white"&gt;</span>
 <span class="cstat-no" title="statement not covered" >      {/* Header */}</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="bg-white shadow-sm border-b"&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"&gt;</span>
@@ -1265,7 +1289,7 @@
 <span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      &lt;div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white"&gt;</span>
 <span class="cstat-no" title="statement not covered" >        {/* Barra de Busca */}</span>
 <span class="cstat-no" title="statement not covered" >        &lt;div className="mb-8"&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;div className="max-w-md mx-auto"&gt;</span>
@@ -1343,7 +1367,7 @@
 <span class="cstat-no" title="statement not covered" >          {filteredProducts.map((product) =&gt; (</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div</span>
 <span class="cstat-no" title="statement not covered" >              key={product.id}</span>
-<span class="cstat-no" title="statement not covered" >              className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group hover:transform hover:scale-105"</span>
+<span class="cstat-no" title="statement not covered" >              className="app-card overflow-hidden group card-hover"</span>
 <span class="cstat-no" title="statement not covered" >            &gt;</span>
 <span class="cstat-no" title="statement not covered" >              {/* Imagem do Produto */}</span>
 <span class="cstat-no" title="statement not covered" >              &lt;div className="relative overflow-hidden"&gt;</span>
@@ -1359,18 +1383,18 @@
 <span class="cstat-no" title="statement not covered" >                </span>
 <span class="cstat-no" title="statement not covered" >                {/* Badges */}</span>
 <span class="cstat-no" title="statement not covered" >                &lt;div className="absolute top-4 left-4 flex gap-2"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                  &lt;span className="bg-pink-600 text-white px-3 py-1 rounded-full text-sm font-medium"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                  &lt;span className="badge"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                    {categories.find(c =&gt; c.id === product.category)?.name || product.category}</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  {product.discount_price &amp;&amp; (</span>
-<span class="cstat-no" title="statement not covered" >                    &lt;span className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-medium"&gt;Promoção&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >                    &lt;span className="badge bg-yellow-100 text-yellow-800 border-yellow-300"&gt;Promoção&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  )}</span>
 <span class="cstat-no" title="statement not covered" >                &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >                {/* Botão de Visualizar */}</span>
 <span class="cstat-no" title="statement not covered" >                &lt;button</span>
 <span class="cstat-no" title="statement not covered" >                  onClick={() =&gt; openProductModal(product)}</span>
-<span class="cstat-no" title="statement not covered" >                  className="absolute top-4 right-4 bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-full shadow-lg transition-all duration-200 opacity-0 group-hover:opacity-100"</span>
+<span class="cstat-no" title="statement not covered" >                  className="absolute top-4 right-4 bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-full shadow-sm transition-all duration-200 opacity-0 group-hover:opacity-100"</span>
 <span class="cstat-no" title="statement not covered" >                &gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /&gt;</span>
@@ -1410,15 +1434,27 @@
 <span class="cstat-no" title="statement not covered" >                &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >                &lt;button</span>
-<span class="cstat-no" title="statement not covered" >                  onClick={() =&gt; addToCart(product.id)}</span>
+<span class="cstat-no" title="statement not covered" >                  onClick={async () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    try {</span>
+<span class="cstat-no" title="statement not covered" >                      setAddingId(product.id)</span>
+<span class="cstat-no" title="statement not covered" >                      await addToCart(product.id)</span>
+<span class="cstat-no" title="statement not covered" >                      showToast('Produto adicionado ao carrinho', 'success')</span>
+<span class="cstat-no" title="statement not covered" >                      // disparar evento global para abrir mini‑carrinho</span>
+<span class="cstat-no" title="statement not covered" >                      try { window.dispatchEvent(new CustomEvent('cart:added')) } catch {}</span>
+<span class="cstat-no" title="statement not covered" >                    } catch {</span>
+<span class="cstat-no" title="statement not covered" >                      showToast('Erro ao adicionar ao carrinho', 'error')</span>
+<span class="cstat-no" title="statement not covered" >                    } finally {</span>
+<span class="cstat-no" title="statement not covered" >                      setAddingId(null)</span>
+<span class="cstat-no" title="statement not covered" >                    }</span>
+<span class="cstat-no" title="statement not covered" >                  }}</span>
 <span class="cstat-no" title="statement not covered" >                  disabled={product.stock === 0}</span>
-<span class="cstat-no" title="statement not covered" >                  className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${</span>
+<span class="cstat-no" title="statement not covered" >                  className={`btn btn-sm btn-primary w-full gap-2 ${</span>
 <span class="cstat-no" title="statement not covered" >                    product.stock === 0</span>
-<span class="cstat-no" title="statement not covered" >                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'</span>
-<span class="cstat-no" title="statement not covered" >                      : 'bg-pink-600 text-white hover:bg-pink-700 hover:shadow-lg transform hover:scale-105'</span>
+<span class="cstat-no" title="statement not covered" >                      ? 'opacity-50 cursor-not-allowed'</span>
+<span class="cstat-no" title="statement not covered" >                      : addingId===product.id ? 'scale-95 ring-2 ring-pink-300' : ''</span>
 <span class="cstat-no" title="statement not covered" >                  }`}</span>
 <span class="cstat-no" title="statement not covered" >                &gt;</span>
-<span class="cstat-no" title="statement not covered" >                  &lt;svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                  &lt;svg className={`w-5 h-5 ${addingId===product.id ? 'animate-bounce' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" /&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;/svg&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  {product.stock === 0 ? 'Esgotado' : 'Adicionar ao Carrinho'}</span>
@@ -1559,13 +1595,13 @@
 <span class="cstat-no" title="statement not covered" >                        closeProductModal();</span>
 <span class="cstat-no" title="statement not covered" >                      }}</span>
 <span class="cstat-no" title="statement not covered" >                      disabled={selectedProduct.stock === 0}</span>
-<span class="cstat-no" title="statement not covered" >                      className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center justify-center gap-3 ${</span>
+<span class="cstat-no" title="statement not covered" >                      className={`w-full py-2.5 px-4 rounded-xl font-semibold text-base transition-all duration-200 flex items-center justify-center gap-3 ${</span>
 <span class="cstat-no" title="statement not covered" >                        selectedProduct.stock === 0</span>
 <span class="cstat-no" title="statement not covered" >                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'</span>
 <span class="cstat-no" title="statement not covered" >                          : 'bg-pink-600 text-white hover:bg-pink-700 hover:shadow-lg transform hover:scale-105'</span>
 <span class="cstat-no" title="statement not covered" >                      }`}</span>
 <span class="cstat-no" title="statement not covered" >                    &gt;</span>
-<span class="cstat-no" title="statement not covered" >                      &lt;svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                      &lt;svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                        &lt;path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" /&gt;</span>
 <span class="cstat-no" title="statement not covered" >                      &lt;/svg&gt;</span>
 <span class="cstat-no" title="statement not covered" >                      {selectedProduct.stock === 0 ? 'Produto Esgotado' : 'Adicionar ao Carrinho'}</span>
@@ -1609,7 +1645,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-02T06:02:02.183Z
+                at 2025-11-04T01:14:56.566Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

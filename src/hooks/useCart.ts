@@ -20,6 +20,7 @@ interface CartItem {
 // Fetcher function for cart data: returns array of items
 const cartFetcher = async (url: string, token: string | null): Promise<CartItem[]> => {
   const response = await fetch(url, {
+    credentials: 'include',
     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
   })
   if (!response.ok) {
@@ -83,6 +84,7 @@ export const useCart = () => {
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        credentials: 'include',
         body: JSON.stringify({ product_id: productId, quantity }),
       })
 
@@ -126,6 +128,7 @@ export const useCart = () => {
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        credentials: 'include',
         body: JSON.stringify({ item_id: itemId, quantity }),
       })
 
@@ -162,6 +165,7 @@ export const useCart = () => {
       const response = await fetch(`/api/cart/${itemId}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -195,6 +199,7 @@ export const useCart = () => {
       const response = await fetch('/api/cart', {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        credentials: 'include',
       })
 
       if (!response.ok) {

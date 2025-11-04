@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/215</span>
+                <span class='fraction'>0/186</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/215</span>
+                <span class='fraction'>0/186</span>
             </div>
         
             
@@ -249,65 +249,7 @@
 <a name='L184'></a><a href='#L184'>184</a>
 <a name='L185'></a><a href='#L185'>185</a>
 <a name='L186'></a><a href='#L186'>186</a>
-<a name='L187'></a><a href='#L187'>187</a>
-<a name='L188'></a><a href='#L188'>188</a>
-<a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a>
-<a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a>
-<a name='L194'></a><a href='#L194'>194</a>
-<a name='L195'></a><a href='#L195'>195</a>
-<a name='L196'></a><a href='#L196'>196</a>
-<a name='L197'></a><a href='#L197'>197</a>
-<a name='L198'></a><a href='#L198'>198</a>
-<a name='L199'></a><a href='#L199'>199</a>
-<a name='L200'></a><a href='#L200'>200</a>
-<a name='L201'></a><a href='#L201'>201</a>
-<a name='L202'></a><a href='#L202'>202</a>
-<a name='L203'></a><a href='#L203'>203</a>
-<a name='L204'></a><a href='#L204'>204</a>
-<a name='L205'></a><a href='#L205'>205</a>
-<a name='L206'></a><a href='#L206'>206</a>
-<a name='L207'></a><a href='#L207'>207</a>
-<a name='L208'></a><a href='#L208'>208</a>
-<a name='L209'></a><a href='#L209'>209</a>
-<a name='L210'></a><a href='#L210'>210</a>
-<a name='L211'></a><a href='#L211'>211</a>
-<a name='L212'></a><a href='#L212'>212</a>
-<a name='L213'></a><a href='#L213'>213</a>
-<a name='L214'></a><a href='#L214'>214</a>
-<a name='L215'></a><a href='#L215'>215</a>
-<a name='L216'></a><a href='#L216'>216</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L187'></a><a href='#L187'>187</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -494,7 +436,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import type { PagesFunction, Response as CfResponse } from '@cloudflare/workers-types'<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
-<span class="cstat-no" title="statement not covered" >import { getAdminClient, requireUser } from './_utils'</span>
+<span class="cstat-no" title="statement not covered" >import { requireUser } from './_utils'</span>
+<span class="cstat-no" title="statement not covered" >import { getD1, queryOne, queryAll, execute } from './_db'</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >// Helper para responder JSON com o tipo de Response do runtime Cloudflare</span>
 <span class="cstat-no" title="statement not covered" >const jsonResponse = (obj: unknown, init?: ResponseInit): CfResponse =&gt;</span>
@@ -506,7 +449,7 @@
 <span class="cstat-no" title="statement not covered" >async function createPaymentIntent(secret: string, amount_cents: number, metadata: Record&lt;string,string&gt;, receipt_email?: string, shipping?: Record&lt;string, string | undefined&gt;): Promise&lt;StripePaymentIntent&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  const body = new URLSearchParams({</span>
 <span class="cstat-no" title="statement not covered" >    amount: String(amount_cents),</span>
-<span class="cstat-no" title="statement not covered" >    currency: 'brl',</span>
+<span class="cstat-no" title="statement not covered" >    currency: 'eur',</span>
 <span class="cstat-no" title="statement not covered" >    automatic_payment_methods: 'enabled',</span>
 <span class="cstat-no" title="statement not covered" >    ...(receipt_email ? { receipt_email } : {}),</span>
 <span class="cstat-no" title="statement not covered" >    ...Object.entries(metadata).reduce((acc,[k,v]) =&gt; { acc[`metadata[${k}]`] = v; return acc }, {} as Record&lt;string,string&gt;),</span>
@@ -557,10 +500,13 @@
 <span class="cstat-no" title="statement not covered" >}</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >export const onRequestPost: PagesFunction = async ({ env, request }) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  const token = request.headers.get('Authorization')?.replace('Bearer ', '') ?? null</span>
+<span class="cstat-no" title="statement not covered" >  const token = request.headers.get('Authorization')?.replace('Bearer ', '')</span>
+<span class="cstat-no" title="statement not covered" >    || (request.headers.get('Cookie') || '').match(/session=([^;]+)/)?.[1]</span>
+<span class="cstat-no" title="statement not covered" >    || null</span>
 <span class="cstat-no" title="statement not covered" >  const user = await requireUser(env as any, token)</span>
 <span class="cstat-no" title="statement not covered" >  if (!user) return jsonResponse({ error: 'Unauthorized' }, { status: 401 })</span>
-<span class="cstat-no" title="statement not covered" >  const supabase = getAdminClient(env as any)</span>
+<span class="cstat-no" title="statement not covered" >  const db = getD1(env as any)</span>
+<span class="cstat-no" title="statement not covered" >  const kv = (env as any).CART_KV as KVNamespace</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  // Parse optional payload for address/shipping/email</span>
 <span class="cstat-no" title="statement not covered" >  const raw: any = await request.json().catch(()=&gt;null)</span>
@@ -569,18 +515,16 @@
 <span class="cstat-no" title="statement not covered" >  const email: string | null = raw?.email ?? null</span>
 <span class="cstat-no" title="statement not covered" >  const coupon_code: string | null = raw?.coupon_code ?? null</span>
 <span class="cstat-no" title="statement not covered" >  </span>
-<span class="cstat-no" title="statement not covered" >  const { data: cart } = await supabase.from('carts').select('id').eq('user_id', user.id).eq('status', 'open').single()</span>
-<span class="cstat-no" title="statement not covered" >  if (!cart) return jsonResponse({ error: 'Carrinho vazio' }, { status: 400 })</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const { data: items } = await supabase</span>
-<span class="cstat-no" title="statement not covered" >    .from('cart_items')</span>
-<span class="cstat-no" title="statement not covered" >    .select('quantity, products(id, price_cents, name)')</span>
-<span class="cstat-no" title="statement not covered" >    .eq('cart_id', cart.id)</span>
-<span class="cstat-no" title="statement not covered" >    .returns&lt;{ quantity: number; products: { id: string; price_cents: number; name: string } }[]&gt;()</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  if (!items || items.length === 0) {</span>
-<span class="cstat-no" title="statement not covered" >    return jsonResponse({ error: 'Carrinho vazio' }, { status: 400 })</span>
+<span class="cstat-no" title="statement not covered" >  const key = `cart:${user.id}`</span>
+<span class="cstat-no" title="statement not covered" >  const stored = await kv.get(key)</span>
+<span class="cstat-no" title="statement not covered" >  const kvItems = stored ? JSON.parse(stored) as { product_id: string; quantity: number }[] : []</span>
+<span class="cstat-no" title="statement not covered" >  if (!kvItems.length) return jsonResponse({ error: 'Carrinho vazio' }, { status: 400 })</span>
+<span class="cstat-no" title="statement not covered" >  const items: { quantity: number; products: { id: string; price_cents: number; name: string } }[] = []</span>
+<span class="cstat-no" title="statement not covered" >  for (const it of kvItems) {</span>
+<span class="cstat-no" title="statement not covered" >    const p = await queryOne&lt;any&gt;(db, 'SELECT id, price_cents, name FROM products WHERE id = ?', [it.product_id])</span>
+<span class="cstat-no" title="statement not covered" >    if (p) items.push({ quantity: it.quantity, products: { id: p.id, price_cents: p.price_cents || 0, name: p.name || '' } })</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >  if (!items.length) return jsonResponse({ error: 'Carrinho vazio' }, { status: 400 })</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const stripeSecret = (env as any).STRIPE_SECRET_KEY</span>
 <span class="cstat-no" title="statement not covered" >  if (!stripeSecret) {</span>
@@ -590,12 +534,7 @@
 <span class="cstat-no" title="statement not covered" >  let amount = (items ?? []).reduce((sum, it) =&gt; sum + it.quantity * (it.products?.price_cents ?? 0), 0)</span>
 <span class="cstat-no" title="statement not covered" >  let discount_cents = 0</span>
 <span class="cstat-no" title="statement not covered" >  if (coupon_code) {</span>
-<span class="cstat-no" title="statement not covered" >    const { data: coupon } = await supabase</span>
-<span class="cstat-no" title="statement not covered" >      .from('coupons')</span>
-<span class="cstat-no" title="statement not covered" >      .select('*')</span>
-<span class="cstat-no" title="statement not covered" >      .eq('code', coupon_code)</span>
-<span class="cstat-no" title="statement not covered" >      .eq('active', true)</span>
-<span class="cstat-no" title="statement not covered" >      .maybeSingle()</span>
+<span class="cstat-no" title="statement not covered" >    const coupon = await queryOne&lt;any&gt;(db, 'SELECT code, percent_off, amount_off_cents, expires_at, active FROM coupons WHERE code = ? AND active = 1', [coupon_code])</span>
 <span class="cstat-no" title="statement not covered" >    if (coupon &amp;&amp; (!coupon.expires_at || new Date(coupon.expires_at).getTime() &gt; Date.now())) {</span>
 <span class="cstat-no" title="statement not covered" >      const percent = typeof coupon.percent_off === 'number' ? coupon.percent_off : null</span>
 <span class="cstat-no" title="statement not covered" >      const amountOff = typeof coupon.amount_off_cents === 'number' ? coupon.amount_off_cents : null</span>
@@ -605,7 +544,7 @@
 <span class="cstat-no" title="statement not covered" >      amount = amount - discount_cents</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  const shipping_cost = shipping_method === 'dhl' ? 1200 : 0</span>
+<span class="cstat-no" title="statement not covered" >  const shipping_cost = shipping_method === 'dhl' ? 495 : 0</span>
 <span class="cstat-no" title="statement not covered" >  const total_amount = amount + shipping_cost</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const shippingRecord = address ? {</span>
@@ -629,27 +568,29 @@
 <span class="cstat-no" title="statement not covered" >    city: shippingRecord.city,</span>
 <span class="cstat-no" title="statement not covered" >    state: shippingRecord.state,</span>
 <span class="cstat-no" title="statement not covered" >    postal_code: shippingRecord.zip,</span>
-<span class="cstat-no" title="statement not covered" >    country: 'BR',</span>
+<span class="cstat-no" title="statement not covered" >    country: 'PT',</span>
 <span class="cstat-no" title="statement not covered" >  } : undefined</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  // Ensure an open cart row exists for metadata tracking (optional)</span>
+<span class="cstat-no" title="statement not covered" >  let cartId: string | null = null</span>
+<span class="cstat-no" title="statement not covered" >  const openCart = await queryOne&lt;any&gt;(db, 'SELECT id FROM carts WHERE user_id = ? AND status = ?', [user.id, 'open'])</span>
+<span class="cstat-no" title="statement not covered" >  if (openCart?.id) cartId = openCart.id</span>
+<span class="cstat-no" title="statement not covered" >  else {</span>
+<span class="cstat-no" title="statement not covered" >    cartId = crypto.randomUUID()</span>
+<span class="cstat-no" title="statement not covered" >    await execute(db, 'INSERT INTO carts (id, user_id, status, created_at, updated_at) VALUES (?, ?, ?, datetime("now"), datetime("now"))', [cartId, user.id, 'open'])</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const metadata = {</span>
 <span class="cstat-no" title="statement not covered" >    shipping_method: String(shipping_method ?? ''),</span>
 <span class="cstat-no" title="statement not covered" >    shipping_cost_cents: String(shipping_cost),</span>
 <span class="cstat-no" title="statement not covered" >    address_json: shippingRecord ? JSON.stringify(shippingRecord) : '',</span>
-<span class="cstat-no" title="statement not covered" >    cart_id: String(cart.id),</span>
+<span class="cstat-no" title="statement not covered" >    cart_id: String(cartId ?? ''),</span>
 <span class="cstat-no" title="statement not covered" >    user_id: String(user.id),</span>
 <span class="cstat-no" title="statement not covered" >    coupon_code: String(coupon_code ?? ''),</span>
 <span class="cstat-no" title="statement not covered" >    discount_cents: String(discount_cents),</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const { data: existingOrder } = await supabase</span>
-<span class="cstat-no" title="statement not covered" >    .from('orders')</span>
-<span class="cstat-no" title="statement not covered" >    .select('id, stripe_intent_id')</span>
-<span class="cstat-no" title="statement not covered" >    .eq('cart_id', cart.id)</span>
-<span class="cstat-no" title="statement not covered" >    .eq('status', 'pending')</span>
-<span class="cstat-no" title="statement not covered" >    .order('created_at', { ascending: false })</span>
-<span class="cstat-no" title="statement not covered" >    .limit(1)</span>
-<span class="cstat-no" title="statement not covered" >    .maybeSingle()</span>
+<span class="cstat-no" title="statement not covered" >  const existingOrder = await queryOne&lt;any&gt;(db, 'SELECT id, stripe_intent_id FROM orders WHERE cart_id = ? AND status = ? ORDER BY created_at DESC LIMIT 1', [cartId, 'pending'])</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  let intent: StripePaymentIntent</span>
 <span class="cstat-no" title="statement not covered" >  if (existingOrder?.stripe_intent_id) {</span>
@@ -663,46 +604,18 @@
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  let orderId: string | null = existingOrder?.id ?? null</span>
-<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  if (orderId) {</span>
-<span class="cstat-no" title="statement not covered" >    await supabase</span>
-<span class="cstat-no" title="statement not covered" >      .from('orders')</span>
-<span class="cstat-no" title="statement not covered" >      .update({</span>
-<span class="cstat-no" title="statement not covered" >        amount_cents: total_amount,</span>
-<span class="cstat-no" title="statement not covered" >        stripe_intent_id: intent.id,</span>
-<span class="cstat-no" title="statement not covered" >        shipping_json: shippingRecord,</span>
-<span class="cstat-no" title="statement not covered" >        shipping_method: shipping_method ?? null,</span>
-<span class="cstat-no" title="statement not covered" >      })</span>
-<span class="cstat-no" title="statement not covered" >      .eq('id', orderId)</span>
-<span class="cstat-no" title="statement not covered" >    await supabase.from('order_items').delete().eq('order_id', orderId)</span>
+<span class="cstat-no" title="statement not covered" >    await execute(db, 'UPDATE orders SET amount_cents = ?, stripe_intent_id = ?, shipping_json = ?, shipping_method = ? WHERE id = ?', [total_amount, intent.id, shippingRecord ? JSON.stringify(shippingRecord) : null, shipping_method ?? null, orderId])</span>
+<span class="cstat-no" title="statement not covered" >    await execute(db, 'DELETE FROM order_items WHERE order_id = ?', [orderId])</span>
 <span class="cstat-no" title="statement not covered" >  } else {</span>
-<span class="cstat-no" title="statement not covered" >    const { data: order } = await supabase</span>
-<span class="cstat-no" title="statement not covered" >      .from('orders')</span>
-<span class="cstat-no" title="statement not covered" >      .insert({</span>
-<span class="cstat-no" title="statement not covered" >        user_id: user.id,</span>
-<span class="cstat-no" title="statement not covered" >        cart_id: cart.id,</span>
-<span class="cstat-no" title="statement not covered" >        amount_cents: total_amount,</span>
-<span class="cstat-no" title="statement not covered" >        status: 'pending',</span>
-<span class="cstat-no" title="statement not covered" >        stripe_intent_id: intent.id,</span>
-<span class="cstat-no" title="statement not covered" >        shipping_json: shippingRecord,</span>
-<span class="cstat-no" title="statement not covered" >        shipping_method: shipping_method ?? null,</span>
-<span class="cstat-no" title="statement not covered" >      })</span>
-<span class="cstat-no" title="statement not covered" >      .select('id')</span>
-<span class="cstat-no" title="statement not covered" >      .single()</span>
-<span class="cstat-no" title="statement not covered" >    orderId = order?.id ?? null</span>
+<span class="cstat-no" title="statement not covered" >    orderId = crypto.randomUUID()</span>
+<span class="cstat-no" title="statement not covered" >    await execute(db, 'INSERT INTO orders (id, user_id, cart_id, amount_cents, status, stripe_intent_id, shipping_json, shipping_method, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime("now"))', [orderId, user.id, cartId, total_amount, 'pending', intent.id, shippingRecord ? JSON.stringify(shippingRecord) : null, shipping_method ?? null])</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  if (orderId) {</span>
-<span class="cstat-no" title="statement not covered" >    const orderItems = items</span>
-<span class="cstat-no" title="statement not covered" >      .filter(it =&gt; it.products?.id)</span>
-<span class="cstat-no" title="statement not covered" >      .map(it =&gt; ({</span>
-<span class="cstat-no" title="statement not covered" >        order_id: orderId as string,</span>
-<span class="cstat-no" title="statement not covered" >        product_id: it.products.id,</span>
-<span class="cstat-no" title="statement not covered" >        quantity: it.quantity,</span>
-<span class="cstat-no" title="statement not covered" >        unit_price_cents: it.products.price_cents ?? 0,</span>
-<span class="cstat-no" title="statement not covered" >      }))</span>
-<span class="cstat-no" title="statement not covered" >    if (orderItems.length &gt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >      await supabase.from('order_items').insert(orderItems)</span>
+<span class="cstat-no" title="statement not covered" >    for (const it of items) {</span>
+<span class="cstat-no" title="statement not covered" >      if (!it.products?.id) continue</span>
+<span class="cstat-no" title="statement not covered" >      await execute(db, 'INSERT INTO order_items (id, order_id, product_id, quantity, unit_price_cents) VALUES (?, ?, ?, ?, ?)', [crypto.randomUUID(), orderId, it.products.id, it.quantity, it.products.price_cents ?? 0])</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -715,7 +628,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-02T06:02:02.183Z
+                at 2025-11-04T01:14:56.566Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

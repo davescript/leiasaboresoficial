@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { useContext } from 'react'
+import { AuthContext } from '../state/AuthContext'
 import { Sheet, SheetContent } from './ui/Sheet'
 import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react'
 import { formatCurrency } from '../lib/api'
@@ -10,6 +12,7 @@ interface MiniCartProps {
 }
 
 export const MiniCart = ({ isOpen, onClose }: MiniCartProps) => {
+  const { session } = useContext(AuthContext)
   const { items: cartItems, isLoading: loading, updateQuantity, removeFromCart } = useCart()
 
   const totalAmount = cartItems.reduce(
@@ -147,7 +150,7 @@ export const MiniCart = ({ isOpen, onClose }: MiniCartProps) => {
                       Ver Carrinho
                     </Link>
                     <Link
-                      to="/checkout"
+                      to={session ? "/checkout" : "/conta"}
                       onClick={onClose}
                       className="block w-full bg-pink-600 text-white py-3 px-4 rounded-lg font-medium text-center hover:bg-pink-700 transition-colors"
                     >

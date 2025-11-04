@@ -90,15 +90,12 @@ export default function Produtos() {
     : [];
 
   const addToCart = async (productId: string) => {
-    if (!session) {
-      showToast('Faça login para adicionar produtos ao carrinho', 'info');
-      return;
-    }
-
     try {
       await addToCartFromHook(productId, 1)
+      // Toast e evento global para abrir MiniCart automaticamente
       showToast('Produto adicionado ao carrinho', 'success')
-      try { swrMutate(['/api/cart', session.access_token]) } catch {}
+      try { window.dispatchEvent(new CustomEvent('cart:added', { detail: { productId, quantity: 1 } })) } catch {}
+      try { swrMutate(['/api/cart', null as any]) } catch {}
     } catch (error) {
       console.error('Erro:', error)
       showToast('Erro ao adicionar produto ao carrinho', 'error')
@@ -121,6 +118,7 @@ export default function Produtos() {
   };
 
   const filteredProducts = products; // Products are already filtered by the API
+  const [addingId, setAddingId] = useState<string | null>(null)
 
   const openProductModal = (product: Product) => {
     setSelectedProduct(product);
@@ -161,7 +159,7 @@ export default function Produtos() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-orange-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -176,7 +174,7 @@ export default function Produtos() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white">
         {/* Barra de Busca */}
         <div className="mb-8">
           <div className="max-w-md mx-auto">
@@ -321,15 +319,27 @@ export default function Produtos() {
                 </div>
 
                 <button
-                  onClick={() => addToCart(product.id)}
+                  onClick={async () => {
+                    try {
+                      setAddingId(product.id)
+                      await addToCart(product.id)
+                      showToast('Produto adicionado ao carrinho', 'success')
+                      // disparar evento global para abrir mini‑carrinho
+                      try { window.dispatchEvent(new CustomEvent('cart:added')) } catch {}
+                    } catch {
+                      showToast('Erro ao adicionar ao carrinho', 'error')
+                    } finally {
+                      setAddingId(null)
+                    }
+                  }}
                   disabled={product.stock === 0}
                   className={`btn btn-sm btn-primary w-full gap-2 ${
                     product.stock === 0
                       ? 'opacity-50 cursor-not-allowed'
-                      : ''
+                      : addingId===product.id ? 'scale-95 ring-2 ring-pink-300' : ''
                   }`}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className={`w-5 h-5 ${addingId===product.id ? 'animate-bounce' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
                   </svg>
                   {product.stock === 0 ? 'Esgotado' : 'Adicionar ao Carrinho'}

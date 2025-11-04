@@ -1,6 +1,6 @@
 import type { PagesFunction, Response as CfResponse } from '@cloudflare/workers-types'
 import { requireUser } from './_utils'
-import { getD1, queryOne } from './_db'
+import { getD1, queryOne, execute } from './_db'
 
 // Helper para responder JSON com o tipo de Response do runtime Cloudflare
 const jsonResponse = (obj: unknown, init?: ResponseInit): CfResponse =>
@@ -8,6 +8,25 @@ const jsonResponse = (obj: unknown, init?: ResponseInit): CfResponse =>
 
 const textResponse = (text: string, init?: ResponseInit): CfResponse =>
   new Response(text, init) as unknown as CfResponse
+
+function corsHeaders(env: any, request: any) {
+  const origin = request.headers.get('Origin') || (env?.FRONTEND_URL ?? '')
+  const allowed = origin && (origin.includes('localhost:5177') || origin === env?.FRONTEND_URL)
+  const headers = new Headers()
+  if (allowed) {
+    headers.set('Access-Control-Allow-Origin', origin)
+    headers.set('Access-Control-Allow-Credentials', 'true')
+    headers.set('Vary', 'Origin')
+  }
+  headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  headers.set('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+  return headers
+}
+
+export const onRequestOptions: PagesFunction = async ({ env, request }) => {
+  const headers = corsHeaders(env as any, request)
+  return new Response(null, { status: 204, headers }) as any
+}
 
 export const onRequestGet: PagesFunction = async ({ env, request }) => {
   const token = request.headers.get('Authorization')?.replace('Bearer ', '') ?? null
@@ -44,7 +63,8 @@ export const onRequestGet: PagesFunction = async ({ env, request }) => {
       }
     })
   }
-  const headers = new Headers({ 'Content-Type': 'application/json' })
+  const headers = corsHeaders(env as any, request)
+  headers.set('Content-Type', 'application/json')
   if (setCookie) headers.set('Set-Cookie', setCookie)
   return new Response(JSON.stringify(items), { headers }) as any
 }
@@ -77,7 +97,26 @@ export const onRequestPost: PagesFunction = async ({ env, request }) => {
   if (found) found.quantity += quantity
   else items.push({ product_id: productId, quantity })
   await kv.put(key, JSON.stringify(items))
-  const headers = new Headers({ 'Content-Type': 'application/json' })
+
+  // Persist also in D1: ensure cart row and upsert cart_items row
+  const cartUserId = user ? user.id : `guest:${anonId}`
+  let cartRow = await queryOne<any>(db, 'SELECT id FROM carts WHERE user_id = ? AND status = ?', [cartUserId, 'open'])
+  if (!cartRow) {
+    const newCartId = crypto.randomUUID()
+    await execute(db, 'INSERT INTO carts (id, user_id, status, created_at, updated_at) VALUES (?, ?, ?, datetime("now"), datetime("now"))', [newCartId, cartUserId, 'open'])
+    cartRow = { id: newCartId }
+  } else {
+    await execute(db, 'UPDATE carts SET updated_at = datetime("now") WHERE id = ?', [cartRow.id])
+  }
+  const existingItem = await queryOne<any>(db, 'SELECT id, quantity FROM cart_items WHERE cart_id = ? AND product_id = ?', [cartRow.id, productId])
+  if (existingItem?.id) {
+    const newQty = (existingItem.quantity || 0) + quantity
+    await execute(db, 'UPDATE cart_items SET quantity = ? WHERE id = ?', [newQty, existingItem.id])
+  } else {
+    await execute(db, 'INSERT INTO cart_items (id, cart_id, product_id, quantity, created_at) VALUES (?, ?, ?, ?, datetime("now"))', [crypto.randomUUID(), cartRow.id, productId, quantity])
+  }
+  const headers = corsHeaders(env as any, request)
+  headers.set('Content-Type', 'application/json')
   if (setCookie) headers.set('Set-Cookie', setCookie)
   return new Response(JSON.stringify({ ok: true, item_id: productId }), { headers }) as any
 }
@@ -102,7 +141,20 @@ export const onRequestPut: PagesFunction = async ({ env, request }) => {
   if (!found) return jsonResponse({ error: 'Item não encontrado' }, { status: 404 })
   found.quantity = qty
   await kv.put(key, JSON.stringify(items))
-  return jsonResponse({ ok: true })
+  // Update D1
+  const db = getD1(env as any)
+  const cartUserId = user ? user.id : `guest:${anonId}`
+  const cartRow = await queryOne<any>(db, 'SELECT id FROM carts WHERE user_id = ? AND status = ?', [cartUserId, 'open'])
+  if (cartRow?.id) {
+    const existingItem = await queryOne<any>(db, 'SELECT id FROM cart_items WHERE cart_id = ? AND product_id = ?', [cartRow.id, item_id])
+    if (existingItem?.id) {
+      await execute(db, 'UPDATE cart_items SET quantity = ? WHERE id = ?', [qty, existingItem.id])
+    }
+    await execute(db, 'UPDATE carts SET updated_at = datetime("now") WHERE id = ?', [cartRow.id])
+  }
+  const headers = corsHeaders(env as any, request)
+  headers.set('Content-Type', 'application/json')
+  return new Response(JSON.stringify({ ok: true }), { headers }) as any
 }
 
 export const onRequestDelete: PagesFunction = async ({ env, request }) => {
@@ -114,5 +166,15 @@ export const onRequestDelete: PagesFunction = async ({ env, request }) => {
   const anonId = match?.[1] || ''
   const key = user ? `cart:${user.id}` : `cart:guest:${anonId}`
   await kv.delete(key)
-  return jsonResponse({ ok: true })
+  // Clear D1 cart items
+  const db = getD1(env as any)
+  const cartUserId = user ? user.id : `guest:${anonId}`
+  const cartRow = await queryOne<any>(db, 'SELECT id FROM carts WHERE user_id = ? AND status = ?', [cartUserId, 'open'])
+  if (cartRow?.id) {
+    await execute(db, 'DELETE FROM cart_items WHERE cart_id = ?', [cartRow.id])
+    await execute(db, 'UPDATE carts SET updated_at = datetime("now") WHERE id = ?', [cartRow.id])
+  }
+  const headers = corsHeaders(env as any, request)
+  headers.set('Content-Type', 'application/json')
+  return new Response(JSON.stringify({ ok: true }), { headers }) as any
 }

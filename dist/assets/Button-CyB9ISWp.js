@@ -1,0 +1,2 @@
+import{j as n,B as b,a as m}from"./index-DS-k03aw.js";const x=({asChild:t,variant:r="primary",className:o,...s})=>{const a=t?b:"button",e={primary:"bg-brand-600 hover:bg-brand-700 text-white",secondary:"bg-amber-100 hover:bg-amber-200 text-brand-700",ghost:"hover:bg-amber-100"}[r];return n.jsx(a,{className:m("rounded-md px-4 py-2 text-sm transition",e,o),...s})};export{x as B};
+//# sourceMappingURL=Button-CyB9ISWp.js.map

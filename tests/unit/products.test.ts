@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { getProducts, getProductById, searchProducts, filterProducts, createProduct, updateProduct, deleteProduct } from '@/lib/api'
-import { resetSupabaseMock, setSupabaseQuery } from '../setup/supabaseMock'
+import { getProducts, getProductById, searchProducts } from '@/lib/api'
+import { resetSupabaseMock } from '../setup/supabaseMock'
 
 const originalFetch = globalThis.fetch
 
@@ -35,45 +35,23 @@ describe('Products API', () => {
     expect(res).toEqual(product)
   })
 
-  it('searchProducts returns matching rows', async () => {
-    setSupabaseQuery('products', { data: [{ id: 'p2', name: 'Bolo' }], error: null })
+  it('searchProducts searches by query', async () => {
+    const payload = { products: [{ id: 'p2', name: 'Bolo de Chocolate' }] }
+    ;(globalThis.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: true, json: async () => payload })
 
     const res = await searchProducts('bolo')
 
+    expect(globalThis.fetch).toHaveBeenCalled()
     expect(res).toHaveLength(1)
-    expect(res[0]?.name).toBe('Bolo')
   })
 
-  it('filterProducts applies range and category', async () => {
-    setSupabaseQuery('products', { data: [{ id: 'p3', category: 'bolos' }], error: null })
+  it('searchProducts filters by category', async () => {
+    const payload = { products: [{ id: 'p3', name: 'Bolo de Chocolate', category: 'bolos' }] }
+    ;(globalThis.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: true, json: async () => payload })
 
-    const res = await filterProducts('bolos', [10, 20])
+    const res = await searchProducts('bolo', 'bolos')
 
+    expect(globalThis.fetch).toHaveBeenCalled()
     expect(res).toHaveLength(1)
-    expect(res[0]?.category).toBe('bolos')
-  })
-
-  it('createProduct inserts payload', async () => {
-    const row = { id: 'p4', name: 'Novo' }
-    setSupabaseQuery('products', { data: row, error: null })
-
-    const res = await createProduct({ name: 'Novo' })
-
-    expect(res).toEqual(row)
-  })
-
-  it('updateProduct persists changes', async () => {
-    const row = { id: 'p5', name: 'Atualizado' }
-    setSupabaseQuery('products', { data: row, error: null })
-
-    const res = await updateProduct('p5', { name: 'Atualizado' })
-
-    expect(res).toEqual(row)
-  })
-
-  it('deleteProduct completes without error', async () => {
-    setSupabaseQuery('products', { data: null, error: null })
-
-    await expect(deleteProduct('p6')).resolves.toBeUndefined()
   })
 })

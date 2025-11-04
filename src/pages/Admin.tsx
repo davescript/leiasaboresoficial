@@ -10,28 +10,16 @@ export default function Admin() {
   const [orders, setOrders] = useState<Order[]>([])
   const [statusFilter, setStatusFilter] = useState<'all'|'pending'|'paid'|'failed'>('all')
 
-  useEffect(() => { fetch('/api/products').then(r=>r.json()).then(setProducts) }, [])
+  useEffect(() => { fetch('/api/products').then(r=>r.json()).then((j:any)=> setProducts(Array.isArray(j?.products)? j.products : [])) }, [])
   useEffect(() => {
-    fetch('/api/orders?all=1').then(r=>r.json()).then((data)=> setOrders(data || [])).catch(()=> setOrders([]))
+    fetch('/api/orders?all=1').then(r=>r.json()).then((data:any)=> setOrders(Array.isArray(data)? data : [])).catch(()=> setOrders([]))
   }, [])
 
   const productCols: Column<Product>[] = [
     { header: 'Nome', accessor: (r)=> r.name },
     { header: 'Categoria', accessor: (r)=> r.category || '—' },
     { header: 'Preço', accessor: (r)=> `R$ ${(r.price_cents/100).toFixed(2)}` },
-    { header: 'Estoque', accessor: (r)=> r.stock, render: (r)=> (
-      <div className="flex items-center gap-2">
-        <input type="number" defaultValue={r.stock} className="w-24 px-2 py-1 border rounded" onBlur={async (e)=>{
-          const val = parseInt(e.currentTarget.value||'0',10)
-          await fetch('/api/products', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: r.id, stock: val }) })
-        }} />
-        <button className="px-2 py-1 rounded bg-pink-600 text-white" onClick={async ()=>{
-          const valEl = (document.activeElement as HTMLInputElement)
-          const val = valEl && valEl.value ? parseInt(valEl.value,10) : r.stock
-          await fetch('/api/products', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: r.id, stock: val }) })
-        }}>Salvar</button>
-      </div>
-    ) },
+    { header: 'Estoque', accessor: (r)=> String(r.stock) },
   ]
 
   const filteredOrders = statusFilter==='all' ? orders : orders.filter(o=>o.status===statusFilter)
@@ -42,6 +30,25 @@ export default function Admin() {
         <h1 className="text-2xl font-semibold mb-4">Admin • Produtos</h1>
         <div className="bg-white rounded-xl shadow p-4">
           <DataTable rows={products} columns={productCols} />
+        </div>
+        <div className="mt-6 bg-white rounded-xl shadow p-4">
+          <h2 className="text-lg font-semibold mb-2">Editar Estoque</h2>
+          <div className="space-y-3">
+            {products.map((p)=> (
+              <div key={p.id} className="flex items-center gap-3">
+                <div className="w-48">{p.name}</div>
+                <input type="number" defaultValue={p.stock} className="w-24 px-2 py-1 border rounded" onBlur={async (e)=>{
+                  const val = parseInt(e.currentTarget.value||'0',10)
+                  await fetch('/api/products', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: p.id, stock: val }) })
+                }} />
+                <button className="px-2 py-1 rounded bg-pink-600 text-white" onClick={async ()=>{
+                  const input = document.querySelector<HTMLInputElement>(`input[data-pid='${p.id}']`)
+                  const val = input && input.value ? parseInt(input.value,10) : p.stock
+                  await fetch('/api/products', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: p.id, stock: val }) })
+                }}>Salvar</button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <div>

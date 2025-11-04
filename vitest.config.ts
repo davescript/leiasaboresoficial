@@ -9,6 +9,7 @@ export default defineConfig({
     },
   },
   test: {
+    environment: 'jsdom',
     coverage: {
       provider: 'v8',
     },
@@ -18,6 +19,6 @@ export default defineConfig({
       'tests/playwright/**',
       'dist/**',
     ],
-  setupFiles: [],
+    setupFiles: [],
   },
 })

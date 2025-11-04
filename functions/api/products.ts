@@ -49,3 +49,24 @@ export const onRequestGet: PagesFunction = async ({ env, request }) => {
   const totalPages = Math.ceil((total || 0) / limit)
   return jsonResponse({ products, total, totalPages })
 }
+
+export const onRequestPut: PagesFunction = async ({ env, request }) => {
+  const db = getD1(env as any)
+  let body: any = null
+  try { body = await request.json() } catch { body = null }
+  const id: string | null = body?.id ?? null
+  if (!id) return jsonResponse({ error: 'missing id' }, { status: 400 })
+  const fields: Record<string, any> = {}
+  if (typeof body?.stock === 'number') fields.stock = body.stock
+  if (typeof body?.name === 'string') fields.name = body.name
+  if (typeof body?.description === 'string') fields.description = body.description
+  if (typeof body?.image_url === 'string') fields.image_url = body.image_url
+  if (typeof body?.category === 'string') fields.category = body.category
+  const keys = Object.keys(fields)
+  if (!keys.length) return jsonResponse({ error: 'no fields' }, { status: 400 })
+  const setSql = keys.map(k => `${k} = ?`).join(', ')
+  const params = keys.map(k => fields[k])
+  await execute(db, `UPDATE products SET ${setSql} WHERE id = ?`, [...params, id])
+  const updated = await queryOne<any>(db, 'SELECT id, name, description, price_cents, image_url, category, stock FROM products WHERE id = ?', [id])
+  return jsonResponse(updated)
+}

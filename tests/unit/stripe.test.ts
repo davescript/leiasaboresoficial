@@ -23,6 +23,8 @@ describe('Stripe Integration', () => {
     expect(globalThis.fetch).toHaveBeenCalledWith('/api/checkout', {
       method: 'POST',
       headers: { Authorization: 'Bearer token-123' },
+      credentials: 'include',
+      mode: 'cors',
     })
     expect(result).toEqual(session)
   })

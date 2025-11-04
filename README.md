@@ -1,4 +1,21 @@
-# Leia Sabores – Cloudflare Pages + Workers + Supabase + Stripe
+# Leia Sabores – Cloudflare Pages + Workers + D1 + KV + R2 + Stripe
+
+Stack atual
+- Frontend: React + Vite + Tailwind (Pages)
+- Backend: Workers (APIs) com D1 (SQLite), KV (cache/carrinho), R2 (imagens), Durable Objects (sessão), AI (Workers AI)
+- Pagamentos: Stripe (Payment Intents + Webhooks)
+
+Como rodar localmente
+1. Configure os bindings no `wrangler.toml` (DB, KV, R2, DO, AI e segredos do Stripe)
+2. Crie o banco D1 e aplique o schema:
+   - `npx wrangler d1 create leiasabores_d1`
+   - `npx wrangler d1 execute leiasabores_d1 --file=./d1/schema.sql --local`
+3. Inicie o dev: `npm run stripe:dev` (Pages + stripe webhook listener)
+4. Acesse `http://localhost:5173` e teste catálogo, carrinho e checkout.
+
+Observações
+- O carrinho funciona mesmo sem login via cookie `anon_id` (KV + sincronização com D1).
+- Uploads de imagem vão para R2 (`/api/upload`) e são servidos por `/api/assets?key=...`.
 
 Loja de bolos e artigos para festas com stack moderna: Front-end em React 18 + Vite + Tailwind + shadcn/ui (componentes), animações com Framer Motion; backend via Cloudflare Pages Functions/Workers; autenticação e banco no Supabase; pagamentos com Stripe (Payment Intents + Webhooks).
 

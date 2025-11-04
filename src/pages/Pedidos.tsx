@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSupabaseAuth } from '../state/useSupabaseAuth'
+import { useAuth } from '../state/useAuth'
 import { useToast } from '../state/ToastContext'
 import { getUserOrders, formatCurrency } from '../lib/api'
 import { Link } from 'react-router-dom'
@@ -19,7 +19,7 @@ interface Order {
 }
 
 export default function Pedidos() {
-  const { session } = useSupabaseAuth()
+  const { session } = useAuth()
   const { showToast } = useToast()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)

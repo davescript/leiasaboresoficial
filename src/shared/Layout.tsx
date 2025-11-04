@@ -7,7 +7,7 @@ export const Layout = () => {
   const location = useLocation()
   return (
     <ToastProvider>
-      <div>
+      <div className="bg-white min-h-screen text-gray-900">
         <Navbar />
         <motion.main className="container" key={location.pathname}
         initial={{ opacity: 0, y: 12 }}

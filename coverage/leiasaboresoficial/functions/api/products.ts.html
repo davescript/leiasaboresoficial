@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/60</span>
+                <span class='fraction'>0/72</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/60</span>
+                <span class='fraction'>0/72</span>
             </div>
         
             
@@ -123,7 +123,19 @@
 <a name='L58'></a><a href='#L58'>58</a>
 <a name='L59'></a><a href='#L59'>59</a>
 <a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -183,65 +195,89 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import type { PagesFunction, Response as CfResponse } from '@cloudflare/workers-types'<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
-<span class="cstat-no" title="statement not covered" >import { getAdminClient } from './_utils'</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import type { PagesFunction, Response as CfResponse } from '@cloudflare/workers-types'</span></span></span>
+<span class="cstat-no" title="statement not covered" >import { getD1, queryOne, queryAll, execute } from './_db'</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >// Helper para garantir o tipo de Response do runtime Cloudflare</span>
 <span class="cstat-no" title="statement not covered" >const jsonResponse = (obj: unknown, init?: ResponseInit): CfResponse =&gt;</span>
 <span class="cstat-no" title="statement not covered" >  new Response(JSON.stringify(obj), { headers: { 'Content-Type': 'application/json' }, ...init }) as unknown as CfResponse</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >export const onRequestGet: PagesFunction = async ({ env, request }) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  const supabase = getAdminClient(env as any)</span>
+<span class="cstat-no" title="statement not covered" >  const db = getD1(env as any)</span>
 <span class="cstat-no" title="statement not covered" >  const url = new URL(request.url)</span>
 <span class="cstat-no" title="statement not covered" >  const search = url.searchParams.get('search')?.trim() ?? ''</span>
 <span class="cstat-no" title="statement not covered" >  const category = url.searchParams.get('category')?.trim() ?? ''</span>
+<span class="cstat-no" title="statement not covered" >  const sort = url.searchParams.get('sort')?.trim() ?? 'newest'</span>
 <span class="cstat-no" title="statement not covered" >  const page = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10))</span>
 <span class="cstat-no" title="statement not covered" >  const limit = Math.max(1, Math.min(50, parseInt(url.searchParams.get('limit') || '12', 10)))</span>
-<span class="cstat-no" title="statement not covered" >  const from = (page - 1) * limit</span>
-<span class="cstat-no" title="statement not covered" >  const to = from + limit - 1</span>
+<span class="cstat-no" title="statement not covered" >  const offset = (page - 1) * limit</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // Base query com count</span>
-<span class="cstat-no" title="statement not covered" >  let query = supabase</span>
-<span class="cstat-no" title="statement not covered" >    .from('products')</span>
-<span class="cstat-no" title="statement not covered" >    .select('*', { count: 'exact' })</span>
+<span class="cstat-no" title="statement not covered" >  // Seeding: se a tabela estiver vazia</span>
+<span class="cstat-no" title="statement not covered" >  const countRow = await queryOne&lt;{ cnt: number }&gt;(db, 'SELECT COUNT(*) as cnt FROM products')</span>
+<span class="cstat-no" title="statement not covered" >  const tableCount = countRow?.cnt ?? 0</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // Busca por nome/descrição</span>
-<span class="cstat-no" title="statement not covered" >  if (search) {</span>
-<span class="cstat-no" title="statement not covered" >    query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`)</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  if (category &amp;&amp; category.toLowerCase() !== 'all') {</span>
-<span class="cstat-no" title="statement not covered" >    query = query.eq('category', category.toLowerCase())</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // Paginação via range</span>
-<span class="cstat-no" title="statement not covered" >  const { data, error, count } = await query.range(from, to)</span>
-<span class="cstat-no" title="statement not covered" >  if (error) return jsonResponse({ error: error.message }, { status: 500 })</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // Auto-seed: se não houver produtos, inserir exemplos com imagens reais</span>
-<span class="cstat-no" title="statement not covered" >  if (!count || count === 0) {</span>
+<span class="cstat-no" title="statement not covered" >  if (!tableCount || tableCount === 0) {</span>
 <span class="cstat-no" title="statement not covered" >    const seed = [</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Bolo Red Velvet Artesanal', description: 'Bolo red velvet com 3 camadas e cream cheese.', price_cents: 6500, image_url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800', category: 'bolos', stock: 8 },</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Bolo de Chocolate Belga Premium', description: 'Chocolate 70% cacau com ganache belga.', price_cents: 7500, image_url: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=800', category: 'bolos', stock: 6 },</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Bolo de Cenoura com Brigadeiro', description: 'Tradicional com cobertura cremosa de brigadeiro.', price_cents: 4500, image_url: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=800', category: 'bolos', stock: 12 },</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Bolo Floresta Negra', description: 'Chocolate, cerejas ao licor e chantilly.', price_cents: 8500, image_url: 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=800', category: 'bolos', stock: 4 },</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Torta de Limão Siciliano', description: 'Base crocante e merengue italiano dourado.', price_cents: 5500, image_url: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800', category: 'tortas', stock: 10 },</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Torta Banoffee', description: 'Doce de leite, bananas caramelizadas e chantilly.', price_cents: 5800, image_url: 'https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=800', category: 'tortas', stock: 6 },</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Cupcake Red Velvet', description: 'Cobertura de cream cheese artesanal.', price_cents: 1200, image_url: 'https://images.unsplash.com/photo-1587668178277-295251f900ce?w=800', category: 'cupcakes', stock: 36 },</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Cupcake de Chocolate Duplo', description: 'Recheio de brigadeiro e ganache.', price_cents: 1400, image_url: 'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=800', category: 'cupcakes', stock: 30 },</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Cupcake de Baunilha Premium', description: 'Baunilha Madagascar com buttercream suíço.', price_cents: 1100, image_url: 'https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=800', category: 'cupcakes', stock: 42 },</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Brownie Tradicional', description: 'Chocolate meio amargo com nozes.', price_cents: 1500, image_url: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=800', category: 'brownies', stock: 20 },</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Brownie Cookies &amp; Cream', description: 'Com pedaços de Oreo e cream cheese.', price_cents: 2000, image_url: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800', category: 'brownies', stock: 12 },</span>
-<span class="cstat-no" title="statement not covered" >      { name: 'Brigadeiro Gourmet (12 un.)', description: 'Sabores variados com ingredientes premium.', price_cents: 3500, image_url: 'https://images.unsplash.com/photo-1558312657-b2dead03d494?w=800', category: 'doces', stock: 25 }</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Bolo Red Velvet Artesanal', description: 'Bolo red velvet com 3 camadas e cream cheese.', price_cents: 6500, image_url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800', category: 'bolos', stock: 8, images_json: ['https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800','https://images.unsplash.com/photo-1589061428087-2a6b203f3e91?w=800','https://images.unsplash.com/photo-1559622214-94b564c1f1a4?w=800','https://images.unsplash.com/photo-1605478638282-9285be6a7b06?w=800'] },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Bolo de Chocolate Belga Premium', description: 'Chocolate 70% cacau com ganache belga.', price_cents: 7500, image_url: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=800', category: 'bolos', stock: 6, images_json: ['https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=800','https://images.unsplash.com/photo-1548859455-1024f0331ec8?w=800','https://images.unsplash.com/photo-1551024601-bec78aea704b?w=800','https://images.unsplash.com/photo-1541782810459-6c6b07b3a2d4?w=800'] },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Torta de Limão Siciliano', description: 'Base crocante e merengue italiano dourado.', price_cents: 5500, image_url: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800', category: 'tortas', stock: 10, images_json: ['https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800','https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800','https://images.unsplash.com/photo-1513247043935-56e1aa4409f1?w=800','https://images.unsplash.com/photo-1511690743698-7f7a4a7f14a3?w=800'] },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Torta Banoffee', description: 'Doce de leite, bananas caramelizadas e chantilly.', price_cents: 5800, image_url: 'https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=800', category: 'tortas', stock: 6, images_json: ['https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=800','https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800','https://images.unsplash.com/photo-1541782810459-6c6b07b3a2d4?w=800','https://images.unsplash.com/photo-1551024601-bec78aea704b?w=800'] },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Cupcake Red Velvet', description: 'Cobertura de cream cheese artesanal.', price_cents: 1200, image_url: 'https://images.unsplash.com/photo-1587668178277-295251f900ce?w=800', category: 'cupcakes', stock: 36, images_json: ['https://images.unsplash.com/photo-1587668178277-295251f900ce?w=800','https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=800','https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=800','https://images.unsplash.com/photo-1589395595558-503c1b6f87f5?w=800'] },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Cupcake de Chocolate Duplo', description: 'Recheio de brigadeiro e ganache.', price_cents: 1400, image_url: 'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=800', category: 'cupcakes', stock: 30, images_json: ['https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=800','https://images.unsplash.com/photo-1549602185-02b9b8269a08?w=800','https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800','https://images.unsplash.com/photo-1511689660979-5b8b41f3b4d2?w=800'] },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Brownie Tradicional', description: 'Chocolate meio amargo com nozes.', price_cents: 1500, image_url: 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=800', category: 'brownies', stock: 20, images_json: ['https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=800','https://images.unsplash.com/photo-1551024601-bec78aea704b?w=800','https://images.unsplash.com/photo-1541782810459-6c6b07b3a2d4?w=800','https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800'] },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Brownie Cookies &amp; Cream', description: 'Com pedaços de Oreo e cream cheese.', price_cents: 2000, image_url: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800', category: 'brownies', stock: 12, images_json: ['https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800','https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800','https://images.unsplash.com/photo-1513247043935-56e1aa4409f1?w=800','https://images.unsplash.com/photo-1511690743698-7f7a4a7f14a3?w=800'] },</span>
+<span class="cstat-no" title="statement not covered" >      { name: 'Brigadeiro Gourmet (12 un.)', description: 'Sabores variados com ingredientes premium.', price_cents: 3500, image_url: 'https://images.unsplash.com/photo-1558312657-b2dead03d494?w=800', category: 'doces', stock: 25, images_json: ['https://images.unsplash.com/photo-1558312657-b2dead03d494?w=800','https://images.unsplash.com/photo-1549602185-02b9b8269a08?w=800','https://images.unsplash.com/photo-1511689660979-5b8b41f3b4d2?w=800','https://images.unsplash.com/photo-1589395595558-503c1b6f87f5?w=800'] }</span>
 <span class="cstat-no" title="statement not covered" >    ]</span>
-<span class="cstat-no" title="statement not covered" >    await supabase.from('products').insert(seed)</span>
-<span class="cstat-no" title="statement not covered" >    const { data: seeded, count: seededCount } = await supabase.from('products').select('*', { count: 'exact' }).range(0, limit - 1)</span>
-<span class="cstat-no" title="statement not covered" >    const totalPages = Math.ceil((seededCount || 0) / limit)</span>
-<span class="cstat-no" title="statement not covered" >    return jsonResponse({ products: seeded ?? [], total: seededCount ?? 0, totalPages })</span>
+<span class="cstat-no" title="statement not covered" >    for (const s of seed) {</span>
+<span class="cstat-no" title="statement not covered" >      await execute(db, 'INSERT INTO products (id, name, description, price_cents, image_url, category, stock, images_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime("now"))', [crypto.randomUUID(), s.name, s.description, s.price_cents, s.image_url, s.category, s.stock, JSON.stringify(s.images_json)])</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >  // Montar filtros</span>
+<span class="cstat-no" title="statement not covered" >  const where: string[] = []</span>
+<span class="cstat-no" title="statement not covered" >  const params: any[] = []</span>
+<span class="cstat-no" title="statement not covered" >  if (search) { where.push('(name LIKE ? OR description LIKE ?)'); params.push(`%${search}%`, `%${search}%`) }</span>
+<span class="cstat-no" title="statement not covered" >  if (category &amp;&amp; category.toLowerCase() !== 'all') { where.push('LOWER(category) = ?'); params.push(category.toLowerCase()) }</span>
+<span class="cstat-no" title="statement not covered" >  const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : ''</span>
+<span class="cstat-no" title="statement not covered" >  const orderSql = sort === 'price_asc' ? 'ORDER BY price_cents ASC' : sort === 'price_desc' ? 'ORDER BY price_cents DESC' : 'ORDER BY created_at DESC'</span>
+<span class="cstat-no" title="statement not covered" >  const countRow2 = await queryOne&lt;{ cnt: number }&gt;(db, `SELECT COUNT(*) as cnt FROM products ${whereSql}`, params)</span>
+<span class="cstat-no" title="statement not covered" >  const total = countRow2?.cnt ?? 0</span>
+<span class="cstat-no" title="statement not covered" >  const rows = await queryAll&lt;any&gt;(db, `SELECT id, name, description, price_cents, image_url, category, stock FROM products ${whereSql} ${orderSql} LIMIT ? OFFSET ?`, [...params, limit, offset])</span>
+<span class="cstat-no" title="statement not covered" >  const products = rows.map(r =&gt; ({ ...r, price_cents: r.price_cents }))</span>
+<span class="cstat-no" title="statement not covered" >  const totalPages = Math.ceil((total || 0) / limit)</span>
+<span class="cstat-no" title="statement not covered" >  return jsonResponse({ products, total, totalPages })</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const totalPages = Math.ceil((count || 0) / limit)</span>
-<span class="cstat-no" title="statement not covered" >  return jsonResponse({ products: data ?? [], total: count ?? 0, totalPages })</span>
+<span class="cstat-no" title="statement not covered" >export const onRequestPut: PagesFunction = async ({ env, request }) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  const db = getD1(env as any)</span>
+<span class="cstat-no" title="statement not covered" >  let body: any = null</span>
+<span class="cstat-no" title="statement not covered" >  try { body = await request.json() } catch { body = null }</span>
+<span class="cstat-no" title="statement not covered" >  const id: string | null = body?.id ?? null</span>
+<span class="cstat-no" title="statement not covered" >  if (!id) return jsonResponse({ error: 'missing id' }, { status: 400 })</span>
+<span class="cstat-no" title="statement not covered" >  const fields: Record&lt;string, any&gt; = {}</span>
+<span class="cstat-no" title="statement not covered" >  if (typeof body?.stock === 'number') fields.stock = body.stock</span>
+<span class="cstat-no" title="statement not covered" >  if (typeof body?.name === 'string') fields.name = body.name</span>
+<span class="cstat-no" title="statement not covered" >  if (typeof body?.description === 'string') fields.description = body.description</span>
+<span class="cstat-no" title="statement not covered" >  if (typeof body?.image_url === 'string') fields.image_url = body.image_url</span>
+<span class="cstat-no" title="statement not covered" >  if (typeof body?.category === 'string') fields.category = body.category</span>
+<span class="cstat-no" title="statement not covered" >  const keys = Object.keys(fields)</span>
+<span class="cstat-no" title="statement not covered" >  if (!keys.length) return jsonResponse({ error: 'no fields' }, { status: 400 })</span>
+<span class="cstat-no" title="statement not covered" >  const setSql = keys.map(k =&gt; `${k} = ?`).join(', ')</span>
+<span class="cstat-no" title="statement not covered" >  const params = keys.map(k =&gt; fields[k])</span>
+<span class="cstat-no" title="statement not covered" >  await execute(db, `UPDATE products SET ${setSql} WHERE id = ?`, [...params, id])</span>
+<span class="cstat-no" title="statement not covered" >  const updated = await queryOne&lt;any&gt;(db, 'SELECT id, name, description, price_cents, image_url, category, stock FROM products WHERE id = ?', [id])</span>
+<span class="cstat-no" title="statement not covered" >  return jsonResponse(updated)</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
@@ -250,7 +286,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-02T06:02:02.183Z
+                at 2025-11-04T01:14:56.566Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

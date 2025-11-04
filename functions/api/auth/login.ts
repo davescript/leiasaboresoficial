@@ -15,12 +15,17 @@ export const onRequestPost: PagesFunction = async ({ env, request }) => {
   if (hashHex !== user.password_hash) return json({ error: 'invalid_credentials' }, { status: 401 })
   const jti = crypto.randomUUID()
   const token = await signJWT({ sub: user.id, jti }, (env as any).JWT_SECRET, 60 * 60 * 24)
-  // Optionally store jti in Durable Object
-  // @ts-ignore
-  const id = (env as any).SESSION_DO.idFromName(user.id)
-  // @ts-ignore
-  const stub = (env as any).SESSION_DO.get(id)
-  await stub.fetch(`https://do/session?user=${user.id}&jti=${jti}`, { method: 'PUT' })
+  // Optionally store jti in Durable Object if available
+  try {
+    // @ts-ignore
+    if ((env as any).SESSION_DO) {
+      // @ts-ignore
+      const id = (env as any).SESSION_DO.idFromName(user.id)
+      // @ts-ignore
+      const stub = (env as any).SESSION_DO.get(id)
+      await stub.fetch(`https://do/session?user=${user.id}&jti=${jti}`, { method: 'PUT' })
+    }
+  } catch {}
   const headers = new Headers({ 'Content-Type': 'application/json' })
   headers.set('Set-Cookie', `session=${token}; HttpOnly; Path=/; SameSite=Lax`)
   return new Response(JSON.stringify({ token }), { status: 200, headers }) as any

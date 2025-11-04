@@ -15,6 +15,13 @@ export const Navbar = () => {
 
   // Item count is derived from useCart and updates reactively
 
+  // Auto-open MiniCart when product is added
+  useEffect(() => {
+    const handler = () => setIsMiniCartOpen(true)
+    window.addEventListener('cart:added', handler as EventListener)
+    return () => window.removeEventListener('cart:added', handler as EventListener)
+  }, [])
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
   const closeMenu = () => setIsMenuOpen(false)
 

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
-import { loadStripe, Stripe } from '@stripe/stripe-js'
-import { useSupabaseAuth } from '../state/useSupabaseAuth'
+import { Elements, PaymentElement, useElements, useStripe, PaymentRequestButtonElement } from '@stripe/react-stripe-js'
+import { loadStripe, Stripe, PaymentRequest } from '@stripe/stripe-js'
+import { useContext } from 'react'
+import { AuthContext } from '../state/AuthContext'
 import { Link } from 'react-router-dom'
 import { OptimizedImage } from '../components/OptimizedImage'
 import { useCart } from '../hooks/useCart'
@@ -25,23 +26,27 @@ export default function CheckoutPage() {
     neighborhood: '', city: '', state: '', zip: ''
   })
   const [errors, setErrors] = useState<Record<string,string>>({})
-  const { session } = useSupabaseAuth()
+  const { session } = useContext(AuthContext)
   const { items, total, isLoading: cartLoading } = useCart()
 
   const cartFingerprint = items.map(it => `${it.id}:${it.quantity}`).join('|')
 
-  const maskCEP = (v: string) => v.replace(/\D/g, '').slice(0,8).replace(/(\d{5})(\d{0,3})/, '$1-$2')
-  const maskPhone = (v: string) => v.replace(/\D/g,'').slice(0,11).replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3')
+  // Portugal: Código Postal NNNN-NNN e telefone com 9 dígitos (ex: 912 345 678)
+  const maskCEP = (v: string) => v.replace(/\D/g, '').slice(0,7).replace(/(\d{4})(\d{0,3})/, '$1-$2')
+  const maskPhone = (v: string) => v.replace(/\D/g,'').slice(0,9).replace(/(\d{3})(\d{3})(\d{0,3})/, '$1 $2 $3')
   const validateAddress = () => {
     const e: Record<string,string> = {}
-    if (!address.name.trim()) e.name = 'Informe seu nome completo'
+    const phoneDigits = address.phone.replace(/\D/g,'')
+    const zip = address.zip.trim()
+    const zipValid = /^\d{4}-\d{3}$/.test(zip)
+    if (!address.name.trim()) e.name = 'Informe o nome completo'
     if (!address.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = 'E-mail inválido'
-    if ((address.phone.replace(/\D/g,'').length) < 10) e.phone = 'Telefone inválido'
-    if (address.zip.replace(/\D/g,'').length !== 8) e.zip = 'CEP inválido'
+    if (phoneDigits.length !== 9) e.phone = 'Telefone inválido (9 dígitos)'
+    if (!zipValid) e.zip = 'Código postal inválido (NNNN-NNN)'
     if (!address.street.trim()) e.street = 'Informe a rua'
     if (!address.number.trim()) e.number = 'Informe o número'
     if (!address.city.trim()) e.city = 'Informe a cidade'
-    if (!address.state.trim()) e.state = 'Informe o estado'
+    // Em Portugal, "Estado/Distrito" é opcional no checkout — não bloquear
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -63,7 +68,8 @@ export default function CheckoutPage() {
     setIntentError(null)
     const res = await fetch('/api/checkout', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ shipping_method: shippingMethod, address, email: address.email, coupon_code: couponCode || null })
     })
     const json: any = await res.json().catch(()=>null)
@@ -186,16 +192,16 @@ export default function CheckoutPage() {
             <div className="space-y-3">
               <ShippingOption
                 active={shippingMethod === 'fedex'}
-                title="Fedex Delivery"
+                title="CTT Express"
                 subtitle="2–3 dias úteis"
                 price="Grátis"
                 onSelect={() => setShippingMethod('fedex')}
               />
               <ShippingOption
                 active={shippingMethod === 'dhl'}
-                title="DHL Delivery"
+                title="DHL Express"
                 subtitle="1–3 dias úteis"
-                price="R$ 12,00"
+                price="€ 4,95"
                 onSelect={() => setShippingMethod('dhl')}
               />
             </div>
@@ -329,8 +335,80 @@ export default function CheckoutPage() {
               </div>
             </div>
           )}
+          {step === 2 && (
+            <div className="bg-white rounded-2xl shadow p-6">
+              <h2 className="text-lg font-semibold mb-4">Pagamento</h2>
+              {intentError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+                  {intentError}
+                </div>
+              )}
+              {!clientSecret ? (
+                <div className="text-sm text-gray-600">Não foi possível carregar os métodos de pagamento. Verifique seus dados e tente novamente.</div>
+              ) : (
+                <div className="space-y-6">
+                  <ExpressCheckout clientSecret={clientSecret} amountCents={Math.round(total * 100)} />
+                  <div className="border rounded-xl p-4">
+                    <PaymentElement options={{ layout: 'tabs' }} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button disabled className="w-full border border-gray-300 rounded-lg py-2 px-3 bg-gray-50 text-gray-500 cursor-not-allowed">PayPal (em breve)</button>
+                    <button disabled className="w-full border border-gray-300 rounded-lg py-2 px-3 bg-gray-50 text-gray-500 cursor-not-allowed">MB Way (em breve)</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
+    </div>
+  )
+}
+
+function ExpressCheckout({ clientSecret, amountCents }: { clientSecret: string; amountCents: number }) {
+  const stripe = useStripe()
+  const elements = useElements()
+  const [prSupported, setPrSupported] = useState(false)
+  const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null)
+
+  useEffect(() => {
+    if (!stripe || !clientSecret) return
+    const pr = stripe.paymentRequest({
+      country: 'PT',
+      currency: 'eur',
+      total: { label: 'Total', amount: amountCents },
+      requestPayerName: true,
+      requestPayerEmail: true,
+    })
+    pr.canMakePayment().then(result => {
+      if (result) {
+        setPrSupported(true)
+        setPaymentRequest(pr)
+      }
+    })
+    pr.on('paymentmethod', async (ev) => {
+      try {
+        const { error } = await stripe!.confirmCardPayment(clientSecret, {
+          payment_method: ev.paymentMethod.id,
+        }, { handleActions: true })
+        if (error) {
+          ev.complete('fail')
+        } else {
+          ev.complete('success')
+        }
+      } catch {
+        ev.complete('fail')
+      }
+    })
+  }, [stripe, clientSecret, amountCents])
+
+  if (!prSupported || !paymentRequest) return (
+    <div className="border rounded-xl p-4 bg-gray-50 text-sm text-gray-600">Apple Pay / Google Pay disponíveis quando suportado pelo dispositivo.</div>
+  )
+
+  return (
+    <div className="border rounded-xl p-4">
+      <PaymentRequestButtonElement options={{ paymentRequest }} />
     </div>
   )
 }

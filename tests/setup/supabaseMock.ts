@@ -1,100 +1,131 @@
-import { vi } from 'vitest'
+// Mock setup for Cloudflare Workers testing
+// Authentication is handled via JWT tokens from /api/auth endpoints
+// Database operations are mocked to simulate D1 responses
 
-type QueryResult<T = any> = { data: T; error: any; [key: string]: any }
+import { vi, beforeEach } from 'vitest'
 
-type QueryQueue = Map<string, QueryResponse[]>
+// Store for query mocks by table name
+const queryMocks: Map<string, any> = new Map()
+const authMocks: Map<string, any> = new Map()
+let mockFetch: any = null
 
-type QueryResponse<T = any> = Promise<QueryResult<T>>
-
-type SupabaseMock = {
-  auth: {
-    signUp: ReturnType<typeof vi.fn>
-    signInWithPassword: ReturnType<typeof vi.fn>
-    signOut: ReturnType<typeof vi.fn>
-    getUser: ReturnType<typeof vi.fn>
+// Initialize and return the mock fetch function
+function initializeFetch() {
+  if (!mockFetch) {
+    mockFetch = vi.fn()
+    global.fetch = mockFetch
   }
-  from: ReturnType<typeof vi.fn>
-  __queues: QueryQueue
+  return mockFetch
 }
 
-const defaultResponse = Promise.resolve({ data: null, error: null })
-
-const getNextResponse = (queues: QueryQueue, table: string) => {
-  const queue = queues.get(table)
-  if (!queue || queue.length === 0) return defaultResponse
-  return queue.shift()! as QueryResponse
+/**
+ * Mock database queries - simulates D1 responses
+ */
+export const setSupabaseQuery = (table: string, response: { data: any; error: any }) => {
+  queryMocks.set(table, response)
+  const fetch = initializeFetch()
+  fetch.mockResolvedValueOnce(
+    new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  )
 }
 
-const createBuilder = (queues: QueryQueue, table: string) => {
-  const next = () => getNextResponse(queues, table)
-  const chain = () => builder
-  const builder: any = {}
-  builder.select = vi.fn(chain)
-  builder.insert = vi.fn(chain)
-  builder.update = vi.fn(chain)
-  builder.delete = vi.fn(chain)
-  builder.eq = vi.fn(chain)
-  builder.ilike = vi.fn(chain)
-  builder.gte = vi.fn(chain)
-  builder.lte = vi.fn(chain)
-  builder.limit = vi.fn(chain)
-  builder.order = vi.fn(chain)
-  builder.returns = vi.fn(() => next())
-  builder.range = vi.fn(() => next())
-  builder.single = vi.fn(() => next())
-  builder.maybeSingle = vi.fn(() => next())
-  builder.then = vi.fn((resolve: any, reject: any) => next().then(resolve, reject))
-  return builder
-}
-
-const createSupabaseMock = (): SupabaseMock => {
-  const queues: QueryQueue = new Map()
-  const fromImpl = vi.fn((table: string) => createBuilder(queues, table))
-  return {
-    auth: {
-      signUp: vi.fn(async () => ({ data: {}, error: null })),
-      signInWithPassword: vi.fn(async () => ({ data: {}, error: null })),
-      signOut: vi.fn(async () => ({})),
-      getUser: vi.fn(async () => ({ data: { user: null } })),
-    },
-    from: fromImpl,
-    __queues: queues,
-  }
-}
-
-export const supabaseMock = createSupabaseMock()
-
-vi.mock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(() => supabaseMock),
-}))
-
-;(globalThis as any).__SUPABASE_TEST_CLIENT__ = supabaseMock
-
-export const setSupabaseQuery = <T = any>(table: string, result: QueryResult<T>) => {
-  if (!supabaseMock.__queues.has(table)) supabaseMock.__queues.set(table, [])
-  supabaseMock.__queues.get(table)!.push(Promise.resolve(result))
-}
-
+/**
+ * Mock authentication user - returns user object from getCurrentUser
+ */
 export const setSupabaseAuthUser = (user: any) => {
-  ;(supabaseMock.auth.getUser as any).mockResolvedValue({ data: { user } })
+  authMocks.set('user', user)
+  const fetch = initializeFetch()
+  fetch.mockResolvedValueOnce(
+    new Response(JSON.stringify({ user }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  )
 }
 
-export const setSupabaseAuthSignIn = (data: any) => {
-  ;(supabaseMock.auth.signInWithPassword as any).mockResolvedValue({ data, error: null })
+/**
+ * Mock sign in response
+ */
+export const setSupabaseAuthSignIn = (response: any) => {
+  authMocks.set('signIn', response)
+  const fetch = initializeFetch()
+  fetch.mockResolvedValueOnce(
+    new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  )
 }
 
-export const setSupabaseAuthSignUp = (data: any) => {
-  ;(supabaseMock.auth.signUp as any).mockResolvedValue({ data, error: null })
+/**
+ * Mock sign up response
+ */
+export const setSupabaseAuthSignUp = (response: any) => {
+  authMocks.set('signUp', response)
+  const fetch = initializeFetch()
+  fetch.mockResolvedValueOnce(
+    new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  )
 }
 
+/**
+ * Helper to mock successful auth responses
+ */
+export const mockAuthSuccess = (user: any = { id: 'test-user-id', email: 'test@example.com' }) => {
+  const fetch = initializeFetch()
+  fetch.mockResolvedValueOnce(
+    new Response(JSON.stringify({ user }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  )
+}
+
+/**
+ * Helper to mock auth errors
+ */
+export const mockAuthError = (message: string = 'Unauthorized', status: number = 401) => {
+  const fetch = initializeFetch()
+  fetch.mockResolvedValueOnce(
+    new Response(JSON.stringify({ error: message }), {
+      status,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  )
+}
+
+/**
+ * Helper to mock API responses
+ */
+export const mockApiResponse = (data: any, status: number = 200) => {
+  const fetch = initializeFetch()
+  fetch.mockResolvedValueOnce(
+    new Response(JSON.stringify(data), {
+      status,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  )
+}
+
+/**
+ * Reset all mocks
+ */
 export const resetSupabaseMock = () => {
-  supabaseMock.__queues.clear()
-  Object.values(supabaseMock.auth).forEach(fn => (fn as any).mockReset())
-  supabaseMock.auth.signUp.mockResolvedValue({ data: {}, error: null })
-  supabaseMock.auth.signInWithPassword.mockResolvedValue({ data: {}, error: null })
-  supabaseMock.auth.signOut.mockResolvedValue({})
-  supabaseMock.auth.getUser.mockResolvedValue({ data: { user: null } })
-  supabaseMock.from.mockReset()
-  supabaseMock.from.mockImplementation((table: string) => createBuilder(supabaseMock.__queues, table))
-  ;(globalThis as any).__SUPABASE_TEST_CLIENT__ = supabaseMock
+  queryMocks.clear()
+  authMocks.clear()
+  mockFetch = vi.fn()
+  global.fetch = mockFetch
+}
+
+/**
+ * Helper to retrieve query mock
+ */
+export const getSupabaseQuery = (table: string) => {
+  return queryMocks.get(table)
 }

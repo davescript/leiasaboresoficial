@@ -27,8 +27,8 @@ describe('Carrinho', () => {
 
   it('calcula total corretamente', () => {
     const total = calculateCartTotal([
-      { quantity: 2, product: { price: 1000 } },
-      { quantity: 1, product: { price: 500 } },
+      { quantity: 2, product: { price_cents: 1000 } },
+      { quantity: 1, product: { price_cents: 500 } },
     ])
 
     expect(total).toBe(2500)
@@ -40,7 +40,14 @@ describe('Carrinho', () => {
 
     const res = await getCart('token')
 
-    expect(globalThis.fetch).toHaveBeenCalledWith('/api/cart', { headers: { Authorization: 'Bearer token' } })
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      '/api/cart',
+      expect.objectContaining({
+        headers: { Authorization: 'Bearer token' },
+        credentials: 'include',
+        mode: 'cors'
+      })
+    )
     expect(res).toEqual(payload)
   })
 

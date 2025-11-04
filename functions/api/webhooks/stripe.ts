@@ -1,5 +1,9 @@
-import type { PagesFunction } from '@cloudflare/workers-types'
-import { getAdminClient } from '../_utils'
+import type { PagesFunction, Response as CfResponse } from '@cloudflare/workers-types'
+import { getD1, queryOne, queryAll, execute } from '../_db'
+
+// Typed helpers to satisfy Cloudflare's Response type
+const text = (body: string, init?: ResponseInit): CfResponse =>
+  new Response(body, init) as unknown as CfResponse
 
 export async function verifyStripeSignature(payload: string, signature: string, secret: string) {
   const parts = Object.fromEntries(signature.split(',').map(kv => kv.split('='))) as any
@@ -17,52 +21,35 @@ export const onRequestPost: PagesFunction = async ({ request, env }) => {
   const raw = await request.text()
   const sig = request.headers.get('stripe-signature') || ''
   const ok = await verifyStripeSignature(raw, sig, (env as any).STRIPE_WEBHOOK_SECRET)
-  if (!ok) return new Response('Bad signature', { status: 400 })
+  if (!ok) return text('Bad signature', { status: 400 })
 
   const event = JSON.parse(raw)
-  const supabase = getAdminClient(env as any)
+  const db = getD1(env as any)
 
   if (event.type === 'payment_intent.succeeded') {
     const intentId = event.data.object.id
-    
-    // Update order status to paid
-    const { data: order } = await supabase
-      .from('orders')
-      .update({ status: 'paid' })
-      .eq('stripe_intent_id', intentId)
-      .select('cart_id, id')
-      .single()
-    
-    // Create order_items and decrement stock
-    if (order?.id && order?.cart_id) {
-      const { data: items } = await supabase
-        .from('cart_items')
-        .select('product_id, quantity, products(price_cents)')
-        .eq('cart_id', order.cart_id)
-
-      for (const it of (items ?? [])) {
-        const unitPrice = typeof it.products?.price_cents === 'number' ? it.products.price_cents : 0
-        await supabase.from('order_items').insert({ order_id: order.id, product_id: it.product_id, quantity: it.quantity, unit_price_cents: unitPrice })
-        // decrement stock
-        const { data: prod } = await supabase.from('products').select('stock').eq('id', it.product_id).single()
-        const newStock = Math.max(0, (prod?.stock ?? 0) - it.quantity)
-        await supabase.from('products').update({ stock: newStock }).eq('id', it.product_id)
+    const order = await queryOne<any>(db, 'SELECT id, cart_id FROM orders WHERE stripe_intent_id = ?', [intentId])
+    if (order?.id) {
+      await execute(db, 'UPDATE orders SET status = ? WHERE id = ?', ['paid', order.id])
+      await execute(db, 'INSERT INTO order_status_history (id, order_id, status, created_at) VALUES (?, ?, ?, datetime("now"))', [crypto.randomUUID(), order.id, 'paid'])
+      // Decrement stock based on existing order_items
+      const res = await db.prepare('SELECT product_id, quantity FROM order_items WHERE order_id = ?').bind(order.id).all<any>()
+      for (const it of (res?.results ?? [])) {
+        const prod = await queryOne<any>(db, 'SELECT stock FROM products WHERE id = ?', [it.product_id])
+        const newStock = Math.max(0, (prod?.stock ?? 0) - (it?.quantity ?? 0))
+        await execute(db, 'UPDATE products SET stock = ? WHERE id = ?', [newStock, it.product_id])
       }
-      await supabase.from('order_status_history').insert({ order_id: order.id, status: 'paid' })
-      await supabase.from('shipments').insert({ order_id: order.id, status: 'pending' })
-    }
-    
-    // Clear cart after successful payment
-    if (order?.cart_id) {
-      // Delete cart items
-      await supabase.from('cart_items').delete().eq('cart_id', order.cart_id)
-      // Close the cart
-      await supabase.from('carts').update({ status: 'converted' }).eq('id', order.cart_id)
+      await execute(db, 'INSERT INTO shipments (id, order_id, status, created_at) VALUES (?, ?, ?, datetime("now"))', [crypto.randomUUID(), order.id, 'pending'])
+      // Close cart if exists
+      if (order.cart_id) {
+        await execute(db, 'UPDATE carts SET status = ?, updated_at = datetime("now") WHERE id = ?', ['converted', order.cart_id])
+        await execute(db, 'DELETE FROM cart_items WHERE cart_id = ?', [order.cart_id])
+      }
     }
   }
   if (event.type === 'payment_intent.payment_failed') {
     const intentId = event.data.object.id
-    await supabase.from('orders').update({ status: 'failed' }).eq('stripe_intent_id', intentId)
+    await execute(db, 'UPDATE orders SET status = ? WHERE stripe_intent_id = ?', ['failed', intentId])
   }
-  return new Response('ok')
+  return text('ok')
 }

@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../state/ToastContext';
 import { OptimizedImage } from '../components/OptimizedImage';
+import { useCart } from '../hooks/useCart';
+import { AuthContext } from '../state/AuthContext';
 
   interface Item {
     id: string;
@@ -20,154 +22,31 @@ import { OptimizedImage } from '../components/OptimizedImage';
   }
 
 export default function Carrinho() {
-  const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { items, isLoading: loading, updateQuantity, removeFromCart } = useCart();
+  const { session } = useContext(AuthContext)
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const session = null as any;
   const { showToast } = useToast();
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState('');
   const [discountCents, setDiscountCents] = useState(0);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
 
-  useEffect(() => {
-    if (session) {
-      refresh();
-    } else {
-      setLoading(false);
-    }
-  }, [session]);
-
-  const refresh = async () => {
-    if (!session) return;
-    
-    try {
-      const response = await fetch('/api/cart', {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-      });
-      
-      if (response.ok) {
-        const data: unknown = await response.json();
-        if (Array.isArray(data)) {
-          setItems(data);
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao carregar carrinho:', error);
-      showToast('Erro ao carregar carrinho', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateQuantity = async (itemId: string, newQuantity: number) => {
-    if (!session || newQuantity < 1) return;
-
-    try {
-      const response = await fetch('/api/cart', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ item_id: itemId, quantity: newQuantity }),
-      });
-
-      if (response.ok) {
-        refresh();
-      }
-    } catch (error) {
-      console.error('Erro ao atualizar quantidade:', error);
-      showToast('Erro ao atualizar quantidade', 'error');
-    }
-  };
-
-  const removeItem = async (itemId: string) => {
-    if (!session) return;
-
-    try {
-      const response = await fetch(`/api/cart/${itemId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (response.ok) {
-        refresh();
-      }
-    } catch (error) {
-      console.error('Erro ao remover item:', error);
-      showToast('Erro ao remover item', 'error');
-    }
-  };
-
   const checkout = async () => {
     if (!session) {
       showToast('Faça login para finalizar a compra', 'info');
+      navigate('/conta');
       return;
     }
-
     setCheckoutLoading(true);
-    try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ coupon_code: couponCode || null })
-      });
-
-      if (response.ok) {
-        // A página de Checkout busca/gera o client_secret; navegamos sempre.
-        navigate('/checkout');
-        return;
-      } else {
-        const errorData: unknown = await response.json();
-        if (errorData && typeof errorData === 'object' && 'error' in errorData) {
-          showToast((errorData as { error: string }).error, 'error');
-        } else {
-          showToast('Erro ao iniciar pagamento', 'error');
-        }
-      }
-    } catch (error) {
-      console.error('Erro no checkout:', error);
-      showToast('Erro ao processar pagamento', 'error');
-    } finally {
-      setCheckoutLoading(false);
-    }
+    navigate('/checkout');
+    setCheckoutLoading(false);
   };
 
   const total = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const grandTotal = Math.max(0, total - discountCents/100);
 
-  if (!session) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-100 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Faça Login</h2>
-          <p className="text-gray-600 mb-6">
-            Você precisa estar logado para ver seu carrinho de compras.
-          </p>
-          <button
-            onClick={() => navigate('/conta')}
-            className="w-full bg-pink-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-pink-700 transition-colors"
-          >
-            Ir para Login
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Visitantes podem ver/editar o carrinho; login será solicitado apenas no checkout
 
   if (loading) {
     return (
@@ -195,7 +74,7 @@ export default function Carrinho() {
             <div className="text-right">
               <div className="text-sm text-gray-500">Total</div>
               <div className="text-3xl font-bold text-pink-600">
-                R$ {total.toFixed(2)}
+                € {total.toFixed(2)}
               </div>
             </div>
           </div>
@@ -227,7 +106,7 @@ export default function Carrinho() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 bg-white">
             {/* Lista de Itens */}
             <div className="lg:col-span-2 space-y-4">
               {items.map((item) => (
@@ -243,13 +122,21 @@ export default function Carrinho() {
                         height={96}
                         sizes="96px"
                       />
-                      {item.product.images && item.product.images.length > 1 && (
-                        <div className="mt-2 grid grid-cols-4 gap-1 w-24">
-                          {item.product.images.slice(0,4).map((img, idx)=> (
-                            <img key={idx} src={img} alt={`${item.product.name} ${idx+1}`} className="w-6 h-6 object-cover rounded" />
-                          ))}
-                        </div>
-                      )}
+                      {(() => {
+                        const thumbs: string[] = Array.isArray((item as any)?.product?.images)
+                          ? (((item as any).product.images as string[]) ?? [])
+                          : []
+                        if (thumbs.length > 1) {
+                          return (
+                            <div className="mt-2 grid grid-cols-4 gap-1 w-24">
+                              {thumbs.slice(0,4).map((img, idx)=> (
+                                <img key={idx} src={img} alt={`${item.product.name} ${idx+1}`} className="w-6 h-6 object-cover rounded" />
+                              ))}
+                            </div>
+                          )
+                        }
+                        return null
+                      })()}
                     </div>
 
                     {/* Informações do Produto */}
@@ -261,7 +148,7 @@ export default function Carrinho() {
                         {item.product.description}
                       </p>
                       <div className="text-lg font-semibold text-pink-600">
-                        R$ {item.product.price.toFixed(2)}
+                        € {item.product.price.toFixed(2)}
                       </div>
                     </div>
 
@@ -294,10 +181,10 @@ export default function Carrinho() {
                     {/* Subtotal e Remover */}
                     <div className="text-right">
                       <div className="text-xl font-bold text-gray-900 mb-2">
-                        R$ {(item.product.price * item.quantity).toFixed(2)}
+                        € {(item.product.price * item.quantity).toFixed(2)}
                       </div>
                       <button
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeFromCart(item.id)}
                         className="text-red-500 hover:text-red-700 text-sm font-medium transition-colors flex items-center gap-1"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -321,12 +208,12 @@ export default function Carrinho() {
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-gray-600">
                     <span>Subtotal ({totalItems} {totalItems === 1 ? 'item' : 'itens'})</span>
-                    <span>R$ {total.toFixed(2)}</span>
+                    <span>€ {total.toFixed(2)}</span>
                   </div>
                   {discountCents > 0 && (
                     <div className="flex justify-between text-gray-600">
                       <span>Cupom</span>
-                      <span className="text-green-600">− R$ {(discountCents/100).toFixed(2)}</span>
+                      <span className="text-green-600">− € {(discountCents/100).toFixed(2)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-gray-600">

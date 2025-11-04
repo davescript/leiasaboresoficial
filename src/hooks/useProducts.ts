@@ -1,3 +1,23 @@
+// src/hooks/useProducts.ts
+import { useEffect, useState } from "react";
+import { fetchProducts } from "../lib/api";
+
+export function useProducts() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchProducts()
+      .then(setProducts)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return { products, loading, error };
+}
+
+
 import useSWR, { mutate } from 'swr'
 
 interface Product {

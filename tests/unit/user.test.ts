@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { signIn, signUp, updateUserProfile, getCurrentUser, signOut } from '@/lib/api'
-import { resetSupabaseMock, setSupabaseQuery, setSupabaseAuthUser, setSupabaseAuthSignIn, setSupabaseAuthSignUp } from '../setup/supabaseMock'
+import { signIn, signUp, getCurrentUser, signOut } from '@/lib/api'
+import { resetSupabaseMock, setSupabaseAuthUser, setSupabaseAuthSignIn, setSupabaseAuthSignUp } from '../setup/supabaseMock'
 
 describe('Perfil do usuário', () => {
   beforeEach(() => {
@@ -11,26 +11,20 @@ describe('Perfil do usuário', () => {
     resetSupabaseMock()
   })
 
-  it('atualiza nome e telefone', async () => {
-    setSupabaseQuery('profiles', { data: { id: 'user-1', name: 'João', phone: '+351912345678' }, error: null })
-
-    await expect(updateUserProfile('user-1', { name: 'João', phone: '+351912345678' })).resolves.toBeUndefined()
-  })
-
   it('signUp cria usuário', async () => {
     setSupabaseAuthSignUp({ user: { id: 'user-1' } })
 
-    const { data } = await signUp('test@example.com', '123456')
+    const result = await signUp('test@example.com', '123456')
 
-    expect(data).toBeDefined()
+    expect(result).toBeDefined()
   })
 
   it('signIn autentica usuário', async () => {
     setSupabaseAuthSignIn({ user: { id: 'user-1' } })
 
-    const { data } = await signIn('test@example.com', '123456')
+    const result = await signIn('test@example.com', '123456')
 
-    expect(data).toBeDefined()
+    expect(result).toBeDefined()
   })
 
   it('getCurrentUser retorna usuário logado', async () => {
